@@ -164,13 +164,13 @@ namespace pazzers
         switch (i)
         {
             case 0:
-                return "men/men1.bmp";
+                return "res/men/men1.bmp";
             case 1:
-                return "men/men2.bmp";
+                return "res/men/men2.bmp";
             case 2:
-                return "men/men3.bmp";
+                return "res/men/men3.bmp";
             case 3:
-                return "men/men4.bmp";
+                return "res/men/men4.bmp";
         }
     }
 
@@ -187,14 +187,14 @@ namespace pazzers
 
 
         // Initialize..
-        status_img = LoadImageSDL("arena/status.bmp");
-        life_img = LoadImageSDL("arena/life.bmp");
-        number = LoadImageSDL("arena/number.bmp");
-        field = LoadImageSDL("arena/Field.bmp");
-        pacman = LoadImageSDL("arena/pac.bmp");
-        skyfall = LoadImageSDL("arena/skyfall.bmp");
-        font1 = TTF_OpenFont("arena/Ubuntu-R.ttf", 16);
-        font2 = TTF_OpenFont("arena/Ubuntu-R.ttf", 14);
+        status_img = LoadImageSDL("res/arena/status.bmp");
+        life_img = LoadImageSDL("res/arena/life.bmp");
+        number = LoadImageSDL("res/arena/number.bmp");
+        field = LoadImageSDL("res/arena/Field.bmp");
+        pacman = LoadImageSDL("res/arena/pac.bmp");
+        skyfall = LoadImageSDL("res/arena/skyfall.bmp");
+        font1 = TTF_OpenFont("res/arena/Ubuntu-R.ttf", 16);
+        font2 = TTF_OpenFont("res/arena/Ubuntu-R.ttf", 14);
         for (i = 0; i < players; i++) men[i].initialize(bmp_name(i), i);
         while (j-- > 0 && joysticks-- > 0)
         {

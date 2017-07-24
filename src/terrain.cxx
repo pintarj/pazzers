@@ -5,10 +5,10 @@ namespace pazzers
     Terrain::Terrain() {
         Uint8 i, j;
 
-        wall=LoadImageSDL("arena/wall.bmp");
-        bomb=LoadImageSDL("arena/bomb.bmp");
-        expl=LoadImageSDL("arena/expl.bmp");
-        bonus=LoadImageSDL("arena/bonus.bmp");
+        wall=LoadImageSDL("res/arena/wall.bmp");
+        bomb=LoadImageSDL("res/arena/bomb.bmp");
+        expl=LoadImageSDL("res/arena/expl.bmp");
+        bonus=LoadImageSDL("res/arena/bonus.bmp");
         for (i=0;i<7;i++) {
             for (j=0;j<4;j++) {
                 expl_clip[i][j].x=i*40;
