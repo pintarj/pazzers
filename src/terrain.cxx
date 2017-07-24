@@ -222,18 +222,18 @@ namespace pazzers
                         area[i][j].type=EXPL;
                         if (area[i][j].atk>0) ptr[area[i][j].owner].mun++;
                         while ( chain(i, j, area[i][j].power) );
-                        ApplySurfaceSDL(FX1+i*40, FY1+j*40, expl, screen, &expl_clip[area[i][j].img][which_one(SDL_GetTicks()-area[i][j].time-4000)]);
+                        ApplySurfaceSDL(FX1+i*40, FY1+j*40, expl, window->surface, &expl_clip[area[i][j].img][which_one(SDL_GetTicks()-area[i][j].time-4000)]);
                     } else {
-                        ApplySurfaceSDL(FX1+i*40, FY1+j*40, bomb, screen, &bomb_clip[which_one2(SDL_GetTicks()-area[i][j].time)]);
+                        ApplySurfaceSDL(FX1+i*40, FY1+j*40, bomb, window->surface, &bomb_clip[which_one2(SDL_GetTicks()-area[i][j].time)]);
                     }
                 } else if (area[i][j].type==EXPL) {
                     if (SDL_GetTicks()-area[i][j].time>=4420) {
                         area[i][j].type=FREE;
                     } else {
-                        ApplySurfaceSDL(FX1+i*40, FY1+j*40, expl, screen, &expl_clip[area[i][j].img][which_one(SDL_GetTicks()-area[i][j].time-4000)]);
+                        ApplySurfaceSDL(FX1+i*40, FY1+j*40, expl, window->surface, &expl_clip[area[i][j].img][which_one(SDL_GetTicks()-area[i][j].time-4000)]);
                     }
                 } else if (area[i][j].type==WALL) {
-                    ApplySurfaceSDL(FX1+i*40, FY1+j*40, wall, screen, &wall_clip[0]);
+                    ApplySurfaceSDL(FX1+i*40, FY1+j*40, wall, window->surface, &wall_clip[0]);
                 } else if (area[i][j].type==DESTROY) {
                     if (SDL_GetTicks()-area[i][j].time>=350) {
                         bns=rand()%100;
@@ -247,29 +247,29 @@ namespace pazzers
                         else
                             area[i][j].type=FREE;
                     } else {
-                        ApplySurfaceSDL(FX1+i*40, FY1+j*40, wall, screen, &wall_clip[which_one3(SDL_GetTicks()-area[i][j].time)]);
+                        ApplySurfaceSDL(FX1+i*40, FY1+j*40, wall, window->surface, &wall_clip[which_one3(SDL_GetTicks()-area[i][j].time)]);
                     }
                 } else if (area[i][j].type==BS_BOMB) {
-                    ApplySurfaceSDL(FX1+i*40, FY1+j*40, bonus, screen, SDL_GetTicks()%500>250?&bonus_clip[0][1]:&bonus_clip[0][0]);
+                    ApplySurfaceSDL(FX1+i*40, FY1+j*40, bonus, window->surface, SDL_GetTicks()%500>250?&bonus_clip[0][1]:&bonus_clip[0][0]);
                 } else if (area[i][j].type==BS_FIRE) {
-                    ApplySurfaceSDL(FX1+i*40, FY1+j*40, bonus, screen, SDL_GetTicks()%500>250?&bonus_clip[1][1]:&bonus_clip[1][0]);
+                    ApplySurfaceSDL(FX1+i*40, FY1+j*40, bonus, window->surface, SDL_GetTicks()%500>250?&bonus_clip[1][1]:&bonus_clip[1][0]);
                 } else if (area[i][j].type==BS_ROLL) {
-                    ApplySurfaceSDL(FX1+i*40, FY1+j*40, bonus, screen, SDL_GetTicks()%500>250?&bonus_clip[2][1]:&bonus_clip[2][0]);
+                    ApplySurfaceSDL(FX1+i*40, FY1+j*40, bonus, window->surface, SDL_GetTicks()%500>250?&bonus_clip[2][1]:&bonus_clip[2][0]);
                 } else if (area[i][j].type==BS_PAC) {
-                    ApplySurfaceSDL(FX1+i*40, FY1+j*40, bonus, screen, SDL_GetTicks()%500>250?&bonus_clip[3][1]:&bonus_clip[3][0]);
+                    ApplySurfaceSDL(FX1+i*40, FY1+j*40, bonus, window->surface, SDL_GetTicks()%500>250?&bonus_clip[3][1]:&bonus_clip[3][0]);
                 } else if (area[i][j].type==BS_SKY) {
-                    ApplySurfaceSDL(FX1+i*40, FY1+j*40, bonus, screen, SDL_GetTicks()%500>250?&bonus_clip[4][1]:&bonus_clip[4][0]);
+                    ApplySurfaceSDL(FX1+i*40, FY1+j*40, bonus, window->surface, SDL_GetTicks()%500>250?&bonus_clip[4][1]:&bonus_clip[4][0]);
                 } else if (area[i][j].type==BS_DEF) {
-                    ApplySurfaceSDL(FX1+i*40, FY1+j*40, bonus, screen, SDL_GetTicks()%500>250?&bonus_clip[5][1]:&bonus_clip[5][0]);
+                    ApplySurfaceSDL(FX1+i*40, FY1+j*40, bonus, window->surface, SDL_GetTicks()%500>250?&bonus_clip[5][1]:&bonus_clip[5][0]);
                 } else if (area[i][j].type==BS_ATK) {
-                    ApplySurfaceSDL(FX1+i*40, FY1+j*40, bonus, screen, SDL_GetTicks()%500>250?&bonus_clip[6][1]:&bonus_clip[6][0]);
+                    ApplySurfaceSDL(FX1+i*40, FY1+j*40, bonus, window->surface, SDL_GetTicks()%500>250?&bonus_clip[6][1]:&bonus_clip[6][0]);
                 } else if (area[i][j].type==SKY) {
                     if (SDL_GetTicks()-area[i][j].time>2000) {
                         area[i][j].time-=2000;
                         area[i][j].type=BOMB;
                     } else {
-                        ApplySurfaceSDL(FX1+i*40, FY1+j*40, skyfall, screen, &bonus_clip[(SDL_GetTicks()-area[i][j].time)/500][0] );
-                        ApplySurfaceSDL(FX1+i*40, FY1+j*40-(2000-(SDL_GetTicks()-area[i][j].time)), skyfall, screen, &bonus_clip[4][0] );
+                        ApplySurfaceSDL(FX1+i*40, FY1+j*40, skyfall, window->surface, &bonus_clip[(SDL_GetTicks()-area[i][j].time)/500][0] );
+                        ApplySurfaceSDL(FX1+i*40, FY1+j*40-(2000-(SDL_GetTicks()-area[i][j].time)), skyfall, window->surface, &bonus_clip[4][0] );
                     }
                 }
             }

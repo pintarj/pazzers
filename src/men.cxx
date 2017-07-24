@@ -6,39 +6,39 @@ namespace pazzers
     {
         char str[10];
 
-        ApplySurfaceSDL(17, 50 + id * 190, status_img, screen, NULL);
-        ApplySurfaceSDL(67, 70 + id * 190, obj, screen, dead == -2 ? &obj_clip[5][0] : &obj_clip[0][0]);
+        ApplySurfaceSDL(17, 50 + id * 190, status_img, window->surface, NULL);
+        ApplySurfaceSDL(67, 70 + id * 190, obj, window->surface, dead == -2 ? &obj_clip[5][0] : &obj_clip[0][0]);
         life_clip.w = life;
-        ApplySurfaceSDL(54, 130 + id * 190, life_img, screen, &life_clip);
+        ApplySurfaceSDL(54, 130 + id * 190, life_img, window->surface, &life_clip);
 
         sprintf(str, "%d", life);
         text = TTF_RenderText_Solid(font1, (const char*) str, black);
-        ApplySurfaceSDL(27, id * 190 + 130, text, screen, NULL);
+        ApplySurfaceSDL(27, id * 190 + 130, text, window->surface, NULL);
         SDL_FreeSurface(text);
 
         sprintf(str, "%d", atk);
         text = TTF_RenderText_Solid(font1, (const char*) str, black);
-        ApplySurfaceSDL(atk > 9 ? 106 : 109, id * 190 + 156, text, screen, NULL);
+        ApplySurfaceSDL(atk > 9 ? 106 : 109, id * 190 + 156, text, window->surface, NULL);
         SDL_FreeSurface(text);
 
         sprintf(str, "%d", def);
         text = TTF_RenderText_Solid(font1, (const char*) str, black);
-        ApplySurfaceSDL(def > 9 ? 106 : 109, id * 190 + 183, text, screen, NULL);
+        ApplySurfaceSDL(def > 9 ? 106 : 109, id * 190 + 183, text, window->surface, NULL);
         SDL_FreeSurface(text);
 
         sprintf(str, "%d", mun_max);
         text = TTF_RenderText_Solid(font2, (const char*) str, black);
-        ApplySurfaceSDL(mun_max > 9 ? 45 : 47, id * 190 + 153, text, screen, NULL);
+        ApplySurfaceSDL(mun_max > 9 ? 45 : 47, id * 190 + 153, text, window->surface, NULL);
         SDL_FreeSurface(text);
 
         sprintf(str, "%d", power);
         text = TTF_RenderText_Solid(font2, (const char*) str, black);
-        ApplySurfaceSDL(power > 9 ? 45 : 47, id * 190 + 170, text, screen, NULL);
+        ApplySurfaceSDL(power > 9 ? 45 : 47, id * 190 + 170, text, window->surface, NULL);
         SDL_FreeSurface(text);
 
         sprintf(str, "%d", speed);
         text = TTF_RenderText_Solid(font2, (const char*) str, black);
-        ApplySurfaceSDL(speed > 9 ? 45 : 47, id * 190 + 187, text, screen, NULL);
+        ApplySurfaceSDL(speed > 9 ? 45 : 47, id * 190 + 187, text, window->surface, NULL);
         SDL_FreeSurface(text);
 
     }
@@ -49,19 +49,19 @@ namespace pazzers
         phase -= dead;
         if (phase < 1500)
         {
-            ApplySurfaceSDL(xy[0].x, xy[0].y, obj, screen, &obj_clip[4][(phase / 250) % 2]);
+            ApplySurfaceSDL(xy[0].x, xy[0].y, obj, window->surface, &obj_clip[4][(phase / 250) % 2]);
         }
         else if (phase < 1750)
         {
-            ApplySurfaceSDL(xy[0].x, xy[0].y, obj, screen, &obj_clip[4][2]);
+            ApplySurfaceSDL(xy[0].x, xy[0].y, obj, window->surface, &obj_clip[4][2]);
         }
         else if (phase < 1900)
         {
-            ApplySurfaceSDL(xy[0].x, xy[0].y, obj, screen, &obj_clip[5][2]);
+            ApplySurfaceSDL(xy[0].x, xy[0].y, obj, window->surface, &obj_clip[5][2]);
         }
         else if (xy[0].y > -50)
         {
-            ApplySurfaceSDL(xy[0].x, xy[0].y, obj, screen, &obj_clip[5][(phase / 100) % 2]);
+            ApplySurfaceSDL(xy[0].x, xy[0].y, obj, window->surface, &obj_clip[5][(phase / 100) % 2]);
             xy[0].y -= count / 2;
             if (phase > 2000) count += 1;
         }
@@ -175,7 +175,7 @@ namespace pazzers
                 case SDL_KEYDOWN:
                 {
                     if (msg == SDLK_ESCAPE) exit(0);
-                    if (msg == SDLK_t) SDL_SaveBMP(screen, "shot.bmp");
+                    if (msg == SDLK_t) SDL_SaveBMP(window->surface, "shot.bmp");
                     if (msg == up)
                     {
                         dir = UP;
@@ -245,10 +245,10 @@ namespace pazzers
     void Men::show()
     {
         if (pac)
-            ApplySurfaceSDL(xy[0].x, xy[0].y, pacman, screen, &obj_clip[dir][alive(++count)]);
+            ApplySurfaceSDL(xy[0].x, xy[0].y, pacman, window->surface, &obj_clip[dir][alive(++count)]);
         else
             ApplySurfaceSDL(xy[0].x, xy[0].y, dmg ? (
-                SDL_GetTicks() % 200 > 100 ? obj : sht) : obj, screen, &obj_clip[dir][alive(++count)]);
+                SDL_GetTicks() % 200 > 100 ? obj : sht) : obj, window->surface, &obj_clip[dir][alive(++count)]);
         count %= 22;
         if (message.time != -1)
         {

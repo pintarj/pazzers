@@ -1,6 +1,7 @@
 #include <pazzers/garbage.hxx>
 #include <time.h>
 #include <SDL/SDL_image.h>
+#include <pazzers/image.hxx>
 #include <pazzers/terrain.hxx>
 
 namespace pazzers
@@ -20,9 +21,9 @@ namespace pazzers
     };
     const int initxy[4][2] = {214, 69, 934, 710, 934, 69, 214, 710};
     XY pacXY = {-1, -1};
+    Image* window = nullptr;
     SDL_Joystick* stick = NULL;
-    SDL_Surface* screen = NULL;
-    SDL_Surface* field = NULL;
+    Image* field = nullptr;
     SDL_Surface* number = NULL;
     SDL_Surface* skyfall = NULL;
     SDL_Surface* status_img = NULL;
@@ -89,7 +90,7 @@ namespace pazzers
     void InitSDL(const char* title)
     {
         SDL_Init(SDL_INIT_EVERYTHING);
-        screen = SDL_SetVideoMode(0, 0, DEPTH, SDL_HWSURFACE | SDL_FULLSCREEN);
+        window = new Image(SDL_SetVideoMode(0, 0, DEPTH, SDL_HWSURFACE | SDL_FULLSCREEN));
         SDL_WM_SetCaption(title, NULL);
         srand(time(NULL));
         TTF_Init();
@@ -106,11 +107,11 @@ namespace pazzers
         SDL_SetAlpha(number, SDL_SRCALPHA, t / 4);
         if (str[i] == '-')
         {
-            ApplySurfaceSDL(*x + (i * 10), *y, number, screen, &numbs[10][1]);
+            ApplySurfaceSDL(*x + (i * 10), *y, number, window->surface, &numbs[10][1]);
             i++;
             while (str[i])
             {
-                ApplySurfaceSDL(*x + (i * 10), *y, number, screen, &numbs[str[i] - '0'][1]);
+                ApplySurfaceSDL(*x + (i * 10), *y, number, window->surface, &numbs[str[i] - '0'][1]);
                 i++;
             }
         }
@@ -118,12 +119,12 @@ namespace pazzers
         {
             if (str[i] == '+')
             {
-                ApplySurfaceSDL(*x + (i * 10), *y, number, screen, &numbs[10][0]);
+                ApplySurfaceSDL(*x + (i * 10), *y, number, window->surface, &numbs[10][0]);
                 i++;
             }
             while (str[i])
             {
-                ApplySurfaceSDL(*x + (i * 10), *y, number, screen, &numbs[str[i] - '0'][0]);
+                ApplySurfaceSDL(*x + (i * 10), *y, number, window->surface, &numbs[str[i] - '0'][0]);
                 i++;
             }
         }
@@ -190,7 +191,7 @@ namespace pazzers
         status_img = LoadImageSDL("res/arena/status.bmp");
         life_img = LoadImageSDL("res/arena/life.bmp");
         number = LoadImageSDL("res/arena/number.bmp");
-        field = LoadImageSDL("res/arena/Field.bmp");
+        field = new Image("res/arena/Field.bmp");
         pacman = LoadImageSDL("res/arena/pac.bmp");
         skyfall = LoadImageSDL("res/arena/skyfall.bmp");
         font1 = TTF_OpenFont("res/arena/Ubuntu-R.ttf", 16);
@@ -233,9 +234,9 @@ namespace pazzers
                 }
                 if (event.type == SDL_QUIT) quit = true;
             }
-            SDL_FillRect(screen, &screen->clip_rect, 0x000000);
+            SDL_FillRect(window->surface, &window->surface->clip_rect, 0x000000);
             for (i = 0; i < players; i++) men[i].status();
-            ApplySurfaceSDL(174, 39, field, screen, NULL);
+            window->apply(*field, 174, 0);
             nature.cicle(men);
             no_shadow_on_my_head(turn, players, men);
             for (i = 0; i < players; i++)
@@ -250,7 +251,7 @@ namespace pazzers
                     men[turn[i]].make_fun(SDL_GetTicks());
                 }
             }
-            SDL_Flip(screen);
+            SDL_Flip(window->surface);
             if ((clock = SDL_GetTicks() - clock) < 1000 / FPS)
             {
                 SDL_Delay(1000 / FPS - clock);
@@ -260,7 +261,7 @@ namespace pazzers
 
 
         // Killing..
-        SDL_FreeSurface(field);
+        delete field;
         SDL_FreeSurface(status_img);
         SDL_FreeSurface(life_img);
         SDL_FreeSurface(pacman);
