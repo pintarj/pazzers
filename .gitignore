@@ -1,2 +1,5 @@
+# CMake build direcroties
+cmake-build-*/
+
 # IDEA's project folder
 .idea/
