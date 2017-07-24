@@ -14,7 +14,7 @@ namespace pazzers
     const int HEIGHT = 759;
     const int DEPTH = 32;
     const int button[4][5] = {
-        SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_KP0,
+        SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_RCTRL,
         SDLK_w, SDLK_s, SDLK_a, SDLK_d, SDLK_TAB,
         SDLK_i, SDLK_k, SDLK_j, SDLK_l, SDLK_SPACE,
         SDLK_KP_DIVIDE, SDLK_KP8, SDLK_KP7, SDLK_KP9, SDLK_KP0
