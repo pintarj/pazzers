@@ -5,7 +5,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 #include <pazzers/image.hxx>
-#include <pazzers/men.hxx>
+#include <pazzers/pazzer.hxx>
 #include <pazzers/xy.hxx>
 
 namespace pazzers

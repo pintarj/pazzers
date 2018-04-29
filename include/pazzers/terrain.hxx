@@ -3,7 +3,7 @@
 #define PAZZERS_TERRAIN_HXX
 
 #include <SDL/SDL.h>
-#include <pazzers/men.hxx>
+#include <pazzers/pazzer.hxx>
 
 #define FREE 0
 #define BOMB 1
@@ -33,7 +33,7 @@ namespace pazzers
             SDL_Surface *expl;
 
         public:
-            void cicle(Men *ptr);
+            void cicle(Pazzer *ptr);
             int chain(int x, int y, int pwr);
             Terrain();
             int which_one(int phase);

@@ -90,7 +90,7 @@ namespace pazzers
     void InitSDL(const char* title)
     {
         SDL_Init(SDL_INIT_EVERYTHING);
-        window = new Image(SDL_SetVideoMode(0, 0, DEPTH, SDL_HWSURFACE | SDL_FULLSCREEN));
+        window = new Image(SDL_SetVideoMode(1200, 800, DEPTH, SDL_HWSURFACE));
         SDL_WM_SetCaption(title, NULL);
         srand(time(NULL));
         TTF_Init();
@@ -133,7 +133,7 @@ namespace pazzers
 
 
 
-    void no_shadow_on_my_head(int* tab, int size, Men* inf)
+    void no_shadow_on_my_head(int* tab, int size, Pazzer* inf)
     {
         Uint8 i, j;
         int* min, to;
@@ -179,7 +179,7 @@ namespace pazzers
     {
         Terrain nature;
         bool quit = false;
-        Men men[players];
+        Pazzer men[players];
         int clock, turn[3];
         int joysticks = SDL_NumJoysticks();
         int joy_id[players];

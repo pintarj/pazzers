@@ -212,7 +212,7 @@ namespace pazzers
     }
 
 
-    void Terrain::cicle(Men *ptr) {
+    void Terrain::cicle(Pazzer *ptr) {
         Uint8 i, j, bns;
 
         for (i=0;i<19;i++) {

@@ -1,8 +1,8 @@
-#include <pazzers/men.hxx>
+#include <pazzers/pazzer.hxx>
 
 namespace pazzers
 {
-    void Men::status()
+    void Pazzer::status()
     {
         char str[10];
 
@@ -44,7 +44,7 @@ namespace pazzers
     }
 
 
-    void Men::make_fun(int phase)
+    void Pazzer::make_fun(int phase)
     {
         phase -= dead;
         if (phase < 1500)
@@ -69,7 +69,7 @@ namespace pazzers
     }
 
 
-    void Men::initialize(const char* name, int id_)
+    void Pazzer::initialize(const char* name, int id_)
     {
         Uint8 i, j;
 
@@ -119,7 +119,7 @@ namespace pazzers
     }
 
 
-    void Men::handle(int msg, int type)
+    void Pazzer::handle(int msg, int type)
     {
         int i;
 
@@ -228,7 +228,7 @@ namespace pazzers
     }
 
 
-    int Men::alive(Uint8 i)
+    int Pazzer::alive(Uint8 i)
     {
         if (mov == false) return 0;
         if (i < 4)
@@ -242,7 +242,7 @@ namespace pazzers
     }
 
 
-    void Men::show()
+    void Pazzer::show()
     {
         if (pac)
             ApplySurfaceSDL(xy[0].x, xy[0].y, pacman, window->surface, &obj_clip[dir][alive(++count)]);
@@ -258,7 +258,7 @@ namespace pazzers
     }
 
 
-    void Men::move()
+    void Pazzer::move()
     {
         if (mov == true)
             switch (dir)
@@ -286,7 +286,7 @@ namespace pazzers
     }
 
 
-    void Men::check()
+    void Pazzer::check()
     {
         int i, j;
 

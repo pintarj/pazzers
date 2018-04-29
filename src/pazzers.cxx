@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <pazzers/men.hxx>
+#include <pazzers/pazzer.hxx>
 #include <pazzers/terrain.hxx>
 
 int main(int argc, char* argv[])

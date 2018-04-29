@@ -35,7 +35,7 @@ namespace pazzers
 
 namespace pazzers
 {
-    class Men {
+    class Pazzer {
         private:
             SDL_Surface *obj, *sht;
             SDL_Rect obj_clip[6][3];
