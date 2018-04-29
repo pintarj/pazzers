@@ -165,13 +165,13 @@ namespace pazzers
         switch (i)
         {
             case 0:
-                return "res/men/men1.bmp";
+                return "res/pazzer/claso.bmp";
             case 1:
-                return "res/men/men2.bmp";
+                return "res/pazzer/darki.bmp";
             case 2:
-                return "res/men/men3.bmp";
+                return "res/pazzer/mexe.bmp";
             case 3:
-                return "res/men/men4.bmp";
+                return "res/pazzer/riba.bmp";
         }
     }
 

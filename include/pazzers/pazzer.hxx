@@ -7,6 +7,8 @@ namespace pazzers
     class Men;
 }
 
+#include <string>
+#include <vector>
 #include <SDL/SDL.h>
 #include <pazzers/garbage.hxx>
 #include <pazzers/xy.hxx>
@@ -35,6 +37,36 @@ namespace pazzers
 
 namespace pazzers
 {
+    /**
+     * \brief Describes a pazzer.
+     * */
+    class PazzerDescriptor
+    {
+    public:
+        /**
+         * \brief The pazzer's name.
+         * */
+        const std::string name;
+
+        /**
+         * \brief The path to the image that represents the pazzer.
+         * */
+        const std::string image_path;
+
+        /**
+         * \brief Create a new pazzer descriptor.
+         * \param name The pazzer's name.
+         * \param image_path The path to the image that represents the pazzer.
+         * */
+        PazzerDescriptor(const std::string& name, const std::string& image_path);
+
+        /**
+         * \brief Returns a vector of all available pazzer descriptors.
+         * \return The vector of all available pazzer descriptors.
+         * */
+        static const std::vector<const PazzerDescriptor*>& get_all();
+    };
+
     class Pazzer {
         private:
             SDL_Surface *obj, *sht;

@@ -2,6 +2,38 @@
 
 namespace pazzers
 {
+    static std::vector<const PazzerDescriptor*> descriptors;
+
+    PazzerDescriptor::PazzerDescriptor(const std::string& name, const std::string& image_path):
+        name(name),
+        image_path(image_path)
+    {
+
+    }
+
+    const std::vector<const PazzerDescriptor*>& PazzerDescriptor::get_all()
+    {
+        static PazzerDescriptor core_descriptors[] =
+            {
+                {"Claso", "res/pazzer/claso.bmp"},
+                {"Darki", "res/pazzer/darki.bmp"},
+                {"Mexe", "res/pazzer/mexe.bmp"},
+                {"Riba", "res/pazzer/riba.bmp"},
+            };
+
+        static bool descriptors_filled = false;
+
+        if (!descriptors_filled)
+        {
+            for (int i = 0, n = sizeof(core_descriptors) / sizeof(PazzerDescriptor); i < n; ++i)
+                descriptors.emplace_back(&core_descriptors[i]);
+
+            descriptors_filled = true;
+        }
+
+        return descriptors;
+    }
+
     void Pazzer::status()
     {
         char str[10];
