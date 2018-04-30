@@ -2,7 +2,8 @@
 
 namespace pazzers
 {
-    Terrain::Terrain() {
+    Terrain::Terrain()
+    {
         Uint8 i, j;
 
         wall=LoadImageSDL("res/arena/wall.bmp");
@@ -68,6 +69,13 @@ namespace pazzers
         area[17][16].type=FREE;
     }
 
+    Terrain::~Terrain()
+    {
+        SDL_FreeSurface(bomb);
+        SDL_FreeSurface(expl);
+        SDL_FreeSurface(wall);
+        SDL_FreeSurface(bonus);
+    }
 
     int Terrain::which_one(int phase) {
         if (phase<70) return 0;
@@ -78,13 +86,11 @@ namespace pazzers
         else return 3;
     }
 
-
     int Terrain::which_one2(int phase) {
         if (phase<2000) return ((phase/150)%2);
         else if (phase<3000) return ((phase/125)%2+1);
         else return ((phase/50)%2+2);
     }
-
 
     int Terrain::which_one3(int phase) {
         if(phase<200)
@@ -92,7 +98,6 @@ namespace pazzers
         else
             return 2;
     }
-
 
     int Terrain::chain(int x, int y, int pwr) {
         Uint8 i, j, _pwr, result=0;
@@ -211,8 +216,7 @@ namespace pazzers
         return result;
     }
 
-
-    void Terrain::cicle(Pazzer *ptr) {
+    void Terrain::cicle(Pazzer** ptr) {
         Uint8 i, j, bns;
 
         for (i=0;i<19;i++) {
@@ -220,7 +224,7 @@ namespace pazzers
                 if (area[i][j].type==BOMB) {
                     if (SDL_GetTicks()-area[i][j].time>=4000) {
                         area[i][j].type=EXPL;
-                        if (area[i][j].atk>0) ptr[area[i][j].owner].mun++;
+                        if (area[i][j].atk>0) ptr[area[i][j].owner]->mun++;
                         while ( chain(i, j, area[i][j].power) );
                         ApplySurfaceSDL(FX1+i*40, FY1+j*40, expl, window->surface, &expl_clip[area[i][j].img][which_one(SDL_GetTicks()-area[i][j].time-4000)]);
                     } else {

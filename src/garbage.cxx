@@ -77,23 +77,12 @@ namespace pazzers
     }
 
 
-    void ApplySurfaceSDL(int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip)
-    {
+    void ApplySurfaceSDL(int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip) {
         SDL_Rect offset;
 
         offset.x = x;
         offset.y = y - 40;
         SDL_BlitSurface(source, clip, destination, &offset);
-    }
-
-
-    void InitSDL(const char* title)
-    {
-        SDL_Init(SDL_INIT_EVERYTHING);
-        window = new Image(SDL_SetVideoMode(1200, 800, DEPTH, SDL_HWSURFACE));
-        SDL_WM_SetCaption(title, NULL);
-        srand(time(NULL));
-        TTF_Init();
     }
 
 
@@ -129,156 +118,5 @@ namespace pazzers
             }
         }
         *y = *y - 1;
-    }
-
-
-
-    void no_shadow_on_my_head(int* tab, int size, Pazzer* inf)
-    {
-        Uint8 i, j;
-        int* min, to;
-
-        for (i = 0; i < size; i++) tab[i] = inf[i].xy[1].y;
-        for (i = 0; i < size; i++)
-        {
-            min = &tab[i];
-            for (j = i; j < size; j++)
-            {
-                if (tab[j] < *min) min = &tab[j];
-            }
-            to = *min;
-            *min = tab[i];
-            tab[i] = to;
-        }
-        for (i = 0; i < size; i++)
-            for (j = 0; j < size; j++)
-                if (inf[i].xy[1].y == tab[j])
-                {
-                    tab[j] = inf[i].id;
-                    break;
-                }
-    }
-
-
-    const char* bmp_name(int i)
-    {
-        switch (i)
-        {
-            case 0:
-                return "res/pazzer/claso.bmp";
-            case 1:
-                return "res/pazzer/darki.bmp";
-            case 2:
-                return "res/pazzer/mexe.bmp";
-            case 3:
-                return "res/pazzer/riba.bmp";
-        }
-    }
-
-    void Game(int players)
-    {
-        Terrain nature;
-        bool quit = false;
-        Pazzer men[players];
-        int clock, turn[3];
-        int joysticks = SDL_NumJoysticks();
-        int joy_id[players];
-        SDL_Joystick* stick[joysticks];
-        Uint8 i, j = players;
-
-
-        // Initialize..
-        status_img = LoadImageSDL("res/arena/status.bmp");
-        life_img = LoadImageSDL("res/arena/life.bmp");
-        number = LoadImageSDL("res/arena/number.bmp");
-        field = new Image("res/arena/Field.bmp");
-        pacman = LoadImageSDL("res/arena/pac.bmp");
-        skyfall = LoadImageSDL("res/arena/skyfall.bmp");
-        font1 = TTF_OpenFont("res/arena/Ubuntu-R.ttf", 16);
-        font2 = TTF_OpenFont("res/arena/Ubuntu-R.ttf", 14);
-        for (i = 0; i < players; i++) men[i].initialize(bmp_name(i), i);
-        while (j-- > 0 && joysticks-- > 0)
-        {
-            men[j].alter = true;
-            stick[j] = SDL_JoystickOpen(j - players + 1);
-            joy_id[j - players + 1] = j;
-        }
-        //-----------
-
-
-        // Game loop..
-        while (quit == false)
-        {
-            clock = SDL_GetTicks();
-            while (SDL_PollEvent(&event))
-            {
-                if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP)
-                {
-                    for (i = 0; i < players; i++)
-                    {
-                        if (men[i].dead == -1)
-                        {
-                            men[i].handle(event.key.keysym.sym, event.type);
-                        }
-                    }
-                }
-                if (event.type == SDL_JOYAXISMOTION)
-                {
-                    if (men[joy_id[event.jaxis.which]].dead == -1)
-                        men[joy_id[event.jaxis.which]].handle(0, 0);
-                }
-                if (event.type == SDL_JOYBUTTONDOWN)
-                {
-                    if (men[joy_id[event.button.which]].dead == -1)
-                        men[joy_id[event.button.which]].handle(0, 0);
-                }
-                if (event.type == SDL_QUIT) quit = true;
-            }
-            SDL_FillRect(window->surface, &window->surface->clip_rect, 0x000000);
-            for (i = 0; i < players; i++) men[i].status();
-            window->apply(*field, 174, 0);
-            nature.cicle(men);
-            no_shadow_on_my_head(turn, players, men);
-            for (i = 0; i < players; i++)
-            {
-                if (men[turn[i]].dead == -1)
-                {
-                    men[turn[i]].move();
-                    men[turn[i]].show();
-                }
-                else if (men[turn[i]].dead != -2)
-                {
-                    men[turn[i]].make_fun(SDL_GetTicks());
-                }
-            }
-            SDL_Flip(window->surface);
-            if ((clock = SDL_GetTicks() - clock) < 1000 / FPS)
-            {
-                SDL_Delay(1000 / FPS - clock);
-            }
-        }
-        //----------
-
-
-        // Killing..
-        delete field;
-        SDL_FreeSurface(status_img);
-        SDL_FreeSurface(life_img);
-        SDL_FreeSurface(pacman);
-        SDL_FreeSurface(number);
-        SDL_FreeSurface(skyfall);
-        nature.kill();
-        TTF_CloseFont(font1);
-        TTF_CloseFont(font2);
-        for (j = players; j-- > 0 && joysticks-- > 0;)
-        {
-            SDL_JoystickClose(stick[j]);
-        }
-        for (i = 0; i < players; i++)
-        {
-            men[i].kill();
-        }
-        //---------
-
     }
 }

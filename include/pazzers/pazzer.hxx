@@ -4,7 +4,7 @@
 
 namespace pazzers
 {
-    class Men;
+    class Pazzer;
 }
 
 #include <string>
@@ -67,37 +67,51 @@ namespace pazzers
         static const std::vector<const PazzerDescriptor*>& get_all();
     };
 
-    class Pazzer {
-        private:
-            SDL_Surface *obj, *sht;
-            SDL_Rect obj_clip[6][3];
-            SDL_Rect life_clip;
-            Uint8 dir;
-            Uint8 count;
-            int up, down, left, right, drop;
-            XY joy;
-            bool mov;
-            int power, speed, time, pac;
-            int cheat[10];
-            struct _message {
-                XY xy;
-                int time;
-                char text[10];
-            } message;
+    class Pazzer
+    {
+    private:
+        SDL_Surface *obj, *sht;
+        SDL_Rect obj_clip[6][3];
+        SDL_Rect life_clip;
+        Uint8 dir;
+        Uint8 count;
+        int up, down, left, right, drop;
+        XY joy;
+        bool mov;
+        int power, speed, time, pac;
+        int cheat[10];
+        struct _message {
+            XY xy;
+            int time;
+            char text[10];
+        } message;
 
-        public:
-            XY xy[4];
-            bool alter;
-            int id, mun, life, dead, mun_max, atk, def, dmg;
-            void make_fun(int phase);
-            void status();
-            void initialize(const char *name, int id_);
-            void show();
-            void kill() { SDL_FreeSurface(obj); SDL_FreeSurface(sht); }
-            int alive(Uint8 i);
-            void handle(int msg, int type);
-            void move();
-            void check();
+    public:
+        /**
+         * \brief The pazzer descriptor.
+         * */
+        const PazzerDescriptor& descriptor;
+
+        /**
+         * \brief Create a new pazzer.
+         * */
+        Pazzer(const PazzerDescriptor& descriptor);
+
+        /**
+         * \brief Release the used resources.
+         * */
+        ~Pazzer();
+
+        XY xy[4];
+        bool alter;
+        int id, mun, life, dead, mun_max, atk, def, dmg;
+        void make_fun(int phase);
+        void status();
+        void show();
+        int alive(Uint8 i);
+        void handle(int msg, int type);
+        void move();
+        void check();
     };
 }
 

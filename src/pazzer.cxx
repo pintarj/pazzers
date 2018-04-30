@@ -3,6 +3,7 @@
 namespace pazzers
 {
     static std::vector<const PazzerDescriptor*> descriptors;
+    static int last_id = 0;
 
     PazzerDescriptor::PazzerDescriptor(const std::string& name, const std::string& image_path):
         name(name),
@@ -32,6 +33,62 @@ namespace pazzers
         }
 
         return descriptors;
+    }
+
+    Pazzer::Pazzer(const PazzerDescriptor& descriptor):
+            descriptor(descriptor)
+    {
+        Uint8 i, j;
+
+        obj = LoadImageSDL(descriptor.image_path.c_str());
+        sht = LoadImageSDL(descriptor.image_path.c_str());
+        NegativeSDL(sht);
+        dir = DOWN;
+        mun = 2;
+        pac = 0;
+        mun_max = mun;
+        power = 4;
+        atk = 26;
+        def = 1;
+        life = 100;
+        id = ++last_id;
+        count = 0;
+        time = SDL_GetTicks() - 4000;
+        xy[0].x = initxy[id][0];
+        xy[0].y = initxy[id][1];
+        joy.x = 0;
+        joy.y = 0;
+        message.time = -1;
+        dead = -1;
+        dmg = 0;
+        speed = 120 / FPS;
+        mov = false;
+        alter = false;
+        up = button[id][0];
+        down = button[id][1];
+        left = button[id][2];
+        right = button[id][3];
+        drop = button[id][4];
+        for (i = 0; i < 10; i++) cheat[i] = 0;
+        for (i = 0; i < 6; i++)
+        {
+            for (j = 0; j < 3; j++)
+            {
+                obj_clip[i][j].x = j * 40;
+                obj_clip[i][j].y = i * 50;
+                obj_clip[i][j].w = 40;
+                obj_clip[i][j].h = 50;
+            }
+        }
+        life_clip.x = 2;
+        life_clip.y = 0;
+        life_clip.h = 19;
+    }
+
+    Pazzer::~Pazzer()
+    {
+        SDL_FreeSurface(obj);
+        SDL_FreeSurface(sht);
     }
 
     void Pazzer::status()
@@ -75,7 +132,6 @@ namespace pazzers
 
     }
 
-
     void Pazzer::make_fun(int phase)
     {
         phase -= dead;
@@ -100,62 +156,11 @@ namespace pazzers
         else dead = -2;
     }
 
-
-    void Pazzer::initialize(const char* name, int id_)
-    {
-        Uint8 i, j;
-
-        obj = LoadImageSDL(name);
-        sht = LoadImageSDL(name);
-        NegativeSDL(sht);
-        dir = DOWN;
-        mun = 2;
-        pac = 0;
-        mun_max = mun;
-        power = 4;
-        atk = 26;
-        def = 1;
-        life = 100;
-        id = id_;
-        count = 0;
-        time = SDL_GetTicks() - 4000;
-        xy[0].x = initxy[id][0];
-        xy[0].y = initxy[id][1];
-        joy.x = 0;
-        joy.y = 0;
-        message.time = -1;
-        dead = -1;
-        dmg = 0;
-        speed = 120 / FPS;
-        mov = false;
-        alter = false;
-        up = button[id][0];
-        down = button[id][1];
-        left = button[id][2];
-        right = button[id][3];
-        drop = button[id][4];
-        for (i = 0; i < 10; i++) cheat[i] = 0;
-        for (i = 0; i < 6; i++)
-        {
-            for (j = 0; j < 3; j++)
-            {
-                obj_clip[i][j].x = j * 40;
-                obj_clip[i][j].y = i * 50;
-                obj_clip[i][j].w = 40;
-                obj_clip[i][j].h = 50;
-            }
-        }
-        life_clip.x = 2;
-        life_clip.y = 0;
-        life_clip.h = 19;
-    }
-
-
     void Pazzer::handle(int msg, int type)
     {
         int i;
 
-        if (alter == true && event.type == SDL_JOYAXISMOTION)
+        if (alter && event.type == SDL_JOYAXISMOTION)
         {
             if (event.jaxis.axis == 0) joy.x = event.jaxis.value;
             if (event.jaxis.axis == 1) joy.y = event.jaxis.value;
@@ -184,7 +189,7 @@ namespace pazzers
             }
             else mov = false;
         }
-        else if (alter == true && event.type == SDL_JOYBUTTONDOWN)
+        else if (alter && event.type == SDL_JOYBUTTONDOWN)
         {
             if ((event.jbutton.button) && (mun > 0))
             {

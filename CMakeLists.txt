@@ -4,6 +4,7 @@ PROJECT(pazzers CXX)
 INCLUDE_DIRECTORIES(include)
 
 ADD_EXECUTABLE(pazzers
+    src/game.cxx
     src/garbage.cxx
     src/image.cxx
     src/pazzer.cxx

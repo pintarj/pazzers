@@ -49,11 +49,7 @@ namespace pazzers
     void NegativeSDL(SDL_Surface* surface);
     SDL_Surface* LoadImageSDL(const char* filename);
     void ApplySurfaceSDL(int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip = NULL);
-    void InitSDL(const char* title);
     void show_num(int* x, int* y, const char* str, int t);
-    void no_shadow_on_my_head(int* tab, int size, Men* inf);
-    const char* bmp_name(int i);
-    void Game(int players);
 }
 
 #endif
