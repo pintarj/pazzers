@@ -1,4 +1,5 @@
 #include <pazzers/pazzer.hxx>
+#include <pazzers/resources/cache.hxx>
 
 namespace pazzers
 {
@@ -36,13 +37,9 @@ namespace pazzers
     }
 
     Pazzer::Pazzer(const PazzerDescriptor& descriptor):
-            descriptor(descriptor)
+            descriptor(descriptor),
+            image(resources::cache::get_image(descriptor.image_path))
     {
-        Uint8 i, j;
-
-        obj = LoadImageSDL(descriptor.image_path.c_str());
-        sht = LoadImageSDL(descriptor.image_path.c_str());
-        NegativeSDL(sht);
         dir = DOWN;
         mun = 2;
         pac = 0;
@@ -69,17 +66,20 @@ namespace pazzers
         left = button[id][2];
         right = button[id][3];
         drop = button[id][4];
-        for (i = 0; i < 10; i++) cheat[i] = 0;
-        for (i = 0; i < 6; i++)
+
+        for (int &i : cheat)
+            i = 0;
+
+        for (std::uint16_t y = 0; y < 6; y++)
         {
-            for (j = 0; j < 3; j++)
+            for (std::uint16_t x = 0; x < 3; x++)
             {
-                obj_clip[i][j].x = j * 40;
-                obj_clip[i][j].y = i * 50;
-                obj_clip[i][j].w = 40;
-                obj_clip[i][j].h = 50;
+                auto offset_x = (std::uint16_t) (x * 40);
+                auto offset_y = (std::uint16_t) (y * 50);
+                clip[y][x] = new resources::ImageView(image, offset_x, offset_y, 40, 50);
             }
         }
+
         life_clip.x = 2;
         life_clip.y = 0;
         life_clip.h = 19;
@@ -87,8 +87,9 @@ namespace pazzers
 
     Pazzer::~Pazzer()
     {
-        SDL_FreeSurface(obj);
-        SDL_FreeSurface(sht);
+        for (auto &row : clip)
+            for (auto &view : row)
+                delete view;
     }
 
     void Pazzer::status()
@@ -96,7 +97,8 @@ namespace pazzers
         char str[10];
 
         ApplySurfaceSDL(17, 50 + id * 190, status_img, window->surface, NULL);
-        ApplySurfaceSDL(67, 70 + id * 190, obj, window->surface, dead == -2 ? &obj_clip[5][0] : &obj_clip[0][0]);
+        window->apply(*clip[dead == -2 ? 5 : 0][0], 67, 30 + id * 190);
+        //ApplySurfaceSDL(67, 70 + id * 190, obj, window->surface, dead == -2 ? clip[5][0] : clip[0][0]);
         life_clip.w = life;
         ApplySurfaceSDL(54, 130 + id * 190, life_img, window->surface, &life_clip);
 
@@ -136,23 +138,31 @@ namespace pazzers
         phase -= dead;
         if (phase < 1500)
         {
-            ApplySurfaceSDL(xy[0].x, xy[0].y, obj, window->surface, &obj_clip[4][(phase / 250) % 2]);
+            window->apply(*clip[4][(phase / 250) % 2], (std::uint16_t) xy[0].x, (std::uint16_t) xy[0].y - 40);
+            //ApplySurfaceSDL(xy[0].x, xy[0].y, obj, window->surface, &obj_clip[4][(phase / 250) % 2]);
         }
         else if (phase < 1750)
         {
-            ApplySurfaceSDL(xy[0].x, xy[0].y, obj, window->surface, &obj_clip[4][2]);
+            window->apply(*clip[4][2], (std::uint16_t) xy[0].x, (std::uint16_t) xy[0].y - 40);
+            //ApplySurfaceSDL(xy[0].x, xy[0].y, obj, window->surface, &obj_clip[4][2]);
         }
         else if (phase < 1900)
         {
-            ApplySurfaceSDL(xy[0].x, xy[0].y, obj, window->surface, &obj_clip[5][2]);
+            window->apply(*clip[5][2], (std::uint16_t) xy[0].x, (std::uint16_t) xy[0].y - 40);
+            //ApplySurfaceSDL(xy[0].x, xy[0].y, obj, window->surface, &obj_clip[5][2]);
         }
         else if (xy[0].y > -50)
         {
-            ApplySurfaceSDL(xy[0].x, xy[0].y, obj, window->surface, &obj_clip[5][(phase / 100) % 2]);
+            window->apply(*clip[5][(phase / 100) % 2], (std::uint16_t) xy[0].x, (std::uint16_t) xy[0].y - 40);
+            //ApplySurfaceSDL(xy[0].x, xy[0].y, obj, window->surface, &obj_clip[5][(phase / 100) % 2]);
+
             xy[0].y -= count / 2;
-            if (phase > 2000) count += 1;
+
+            if (phase > 2000)
+                count += 1;
         }
-        else dead = -2;
+        else
+            dead = -2;
     }
 
     void Pazzer::handle(int msg, int type)
@@ -281,11 +291,15 @@ namespace pazzers
     void Pazzer::show()
     {
         if (pac)
-            ApplySurfaceSDL(xy[0].x, xy[0].y, pacman, window->surface, &obj_clip[dir][alive(++count)]);
+            window->apply(*clip[dir][alive(++count)], (std::uint16_t) xy[0].x, (std::uint16_t) xy[0].y - 40);
+            //ApplySurfaceSDL(xy[0].x, xy[0].y, pacman, window->surface, &obj_clip[dir][alive(++count)]);
         else
-            ApplySurfaceSDL(xy[0].x, xy[0].y, dmg ? (
-                SDL_GetTicks() % 200 > 100 ? obj : sht) : obj, window->surface, &obj_clip[dir][alive(++count)]);
+            window->apply(*clip[dir][alive(++count)], (std::uint16_t) xy[0].x, (std::uint16_t) xy[0].y - 40);
+            //ApplySurfaceSDL(xy[0].x, xy[0].y, dmg ? (
+            //    SDL_GetTicks() % 200 > 100 ? obj : sht) : obj, window->surface, &obj_clip[dir][alive(++count)]);
+
         count %= 22;
+
         if (message.time != -1)
         {
             show_num(&message.xy.x, &message.xy.y, message.text, message.time);

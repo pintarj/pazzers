@@ -13,7 +13,19 @@ namespace pazzers
         }
 
         Image::Image(const std::string& file_name):
-            Image(IMG_Load(file_name.c_str()))
+            Image([file_name] () -> SDL_Surface*
+                {
+                    SDL_Surface* loaded = IMG_Load(file_name.c_str());
+
+                    if (loaded == nullptr)
+                        // TODO throw an exeption.
+                        return nullptr;
+
+                    SDL_Surface* optimized = SDL_DisplayFormat(loaded);
+                    SDL_FreeSurface(loaded);
+                    SDL_SetColorKey(optimized, SDL_SRCCOLORKEY, SDL_MapRGB(optimized->format, 0xFF, 0x00, 0xFF));
+                    return optimized;
+                } ())
         {
 
         }

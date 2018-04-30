@@ -12,6 +12,7 @@ namespace pazzers
 #include <SDL/SDL.h>
 #include <pazzers/garbage.hxx>
 #include <pazzers/xy.hxx>
+#include <pazzers/resources/image.hxx>
 
 #define UP 1
 #define DOWN 0
@@ -69,23 +70,6 @@ namespace pazzers
 
     class Pazzer
     {
-    private:
-        SDL_Surface *obj, *sht;
-        SDL_Rect obj_clip[6][3];
-        SDL_Rect life_clip;
-        Uint8 dir;
-        Uint8 count;
-        int up, down, left, right, drop;
-        XY joy;
-        bool mov;
-        int power, speed, time, pac;
-        int cheat[10];
-        struct _message {
-            XY xy;
-            int time;
-            char text[10];
-        } message;
-
     public:
         /**
          * \brief The pazzer descriptor.
@@ -113,6 +97,24 @@ namespace pazzers
         void handle(int msg, int type);
         void move();
         void check();
+
+    private:
+        const resources::Image& image;
+        const resources::ImageView* clip[6][3];
+
+        SDL_Rect life_clip;
+        Uint8 dir;
+        Uint8 count;
+        int up, down, left, right, drop;
+        XY joy;
+        bool mov;
+        int power, speed, time, pac;
+        int cheat[10];
+        struct _message {
+            XY xy;
+            int time;
+            char text[10];
+        } message;
     };
 }
 
