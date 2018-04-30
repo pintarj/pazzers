@@ -70,12 +70,12 @@ namespace pazzers
         for (int &i : cheat)
             i = 0;
 
-        for (std::uint16_t y = 0; y < 6; y++)
+        for (int y = 0; y < 6; y++)
         {
-            for (std::uint16_t x = 0; x < 3; x++)
+            for (int x = 0; x < 3; x++)
             {
-                auto offset_x = (std::uint16_t) (x * 40);
-                auto offset_y = (std::uint16_t) (y * 50);
+                auto offset_x = x * 40;
+                auto offset_y = y * 50;
                 clip[y][x] = new resources::ImageView(image, offset_x, offset_y, 40, 50);
             }
         }
@@ -98,7 +98,6 @@ namespace pazzers
 
         ApplySurfaceSDL(17, 50 + id * 190, status_img, window->surface, NULL);
         window->apply(*clip[dead == -2 ? 5 : 0][0], 67, 30 + id * 190);
-        //ApplySurfaceSDL(67, 70 + id * 190, obj, window->surface, dead == -2 ? clip[5][0] : clip[0][0]);
         life_clip.w = life;
         ApplySurfaceSDL(54, 130 + id * 190, life_img, window->surface, &life_clip);
 
@@ -136,25 +135,22 @@ namespace pazzers
     void Pazzer::make_fun(int phase)
     {
         phase -= dead;
+
         if (phase < 1500)
         {
-            window->apply(*clip[4][(phase / 250) % 2], (std::uint16_t) xy[0].x, (std::uint16_t) xy[0].y - 40);
-            //ApplySurfaceSDL(xy[0].x, xy[0].y, obj, window->surface, &obj_clip[4][(phase / 250) % 2]);
+            window->apply(*clip[4][(phase / 250) % 2], xy[0].x, xy[0].y - 40);
         }
         else if (phase < 1750)
         {
-            window->apply(*clip[4][2], (std::uint16_t) xy[0].x, (std::uint16_t) xy[0].y - 40);
-            //ApplySurfaceSDL(xy[0].x, xy[0].y, obj, window->surface, &obj_clip[4][2]);
+            window->apply(*clip[4][2], xy[0].x, xy[0].y - 40);
         }
         else if (phase < 1900)
         {
-            window->apply(*clip[5][2], (std::uint16_t) xy[0].x, (std::uint16_t) xy[0].y - 40);
-            //ApplySurfaceSDL(xy[0].x, xy[0].y, obj, window->surface, &obj_clip[5][2]);
+            window->apply(*clip[5][2], xy[0].x, xy[0].y - 40);
         }
         else if (xy[0].y > -50)
         {
-            window->apply(*clip[5][(phase / 100) % 2], (std::uint16_t) xy[0].x, (std::uint16_t) xy[0].y - 40);
-            //ApplySurfaceSDL(xy[0].x, xy[0].y, obj, window->surface, &obj_clip[5][(phase / 100) % 2]);
+            window->apply(*clip[5][(phase / 100) % 2], xy[0].x, xy[0].y - 40);
 
             xy[0].y -= count / 2;
 
@@ -291,12 +287,11 @@ namespace pazzers
     void Pazzer::show()
     {
         if (pac)
-            window->apply(*clip[dir][alive(++count)], (std::uint16_t) xy[0].x, (std::uint16_t) xy[0].y - 40);
-            //ApplySurfaceSDL(xy[0].x, xy[0].y, pacman, window->surface, &obj_clip[dir][alive(++count)]);
+            // should draw pacman
+            window->apply(*clip[dir][alive(++count)], xy[0].x, xy[0].y - 40);
         else
-            window->apply(*clip[dir][alive(++count)], (std::uint16_t) xy[0].x, (std::uint16_t) xy[0].y - 40);
-            //ApplySurfaceSDL(xy[0].x, xy[0].y, dmg ? (
-            //    SDL_GetTicks() % 200 > 100 ? obj : sht) : obj, window->surface, &obj_clip[dir][alive(++count)]);
+            // should blink with negative
+            window->apply(*clip[dir][alive(++count)], xy[0].x, xy[0].y - 40);
 
         count %= 22;
 

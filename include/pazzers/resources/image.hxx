@@ -51,13 +51,13 @@ namespace pazzers
              * \brief Returns the image's width.
              * \return The image's width.
              * */
-            std::uint16_t get_width() const;
+            int get_width() const;
 
             /**
              * \brief Returns the image's height.
              * \return The image's height.
              * */
-            std::uint16_t get_height() const;
+            int get_height() const;
 
             /**
              * \brief Applies an image, using the specified image view associated with it, on this image on the specified
@@ -66,7 +66,7 @@ namespace pazzers
              * \param x The x offset on this image.
              * \param y The y offset on this image.
              * */
-            void apply(const ImageView& view, std::uint16_t x, std::uint16_t y);
+            void apply(const ImageView& view, int x, int y);
 
             /**
              * \brief Applies a specified image, using it's "full_view", on this image on the specified offset.
@@ -74,7 +74,7 @@ namespace pazzers
              * \param x The x offset on this image.
              * \param y The y offset on this image.
              * */
-            void apply(const Image& image, std::uint16_t x, std::uint16_t y);
+            void apply(const Image& image, int x, int y);
 
             /**
              * \brief Create a clone of this image.
@@ -89,7 +89,7 @@ namespace pazzers
              * \param f The function will accept the x and y coordinates and then the values of the current pixel.
              *     The new values of the pixel have to be stored directly in the third argument.
              * */
-            void filter(const std::function<void(std::uint16_t, std::uint16_t, std::uint8_t*)>& f);
+            void filter(const std::function<void(int, int, std::uint8_t*)>& f);
         };
 
         /**
@@ -112,7 +112,7 @@ namespace pazzers
              * \param width The width of the view.
              * \param width The height of the view.
              * */
-            ImageView(const Image& image, std::uint16_t x, std::uint16_t y, std::uint16_t width, std::uint16_t height);
+            ImageView(const Image& image, int x, int y, int width, int height);
 
             /**
              * \brief Release the used resources.
@@ -123,13 +123,13 @@ namespace pazzers
              * \brief Returns the image's width.
              * \return The image's width.
              * */
-            std::uint16_t get_width() const;
+            int get_width() const;
 
             /**
              * \brief Returns the image's height.
              * \return The image's height.
              * */
-            std::uint16_t get_height() const;
+            int get_height() const;
 
             /**
              * \brief Applies an image, using the specified image view associated with it, on the image that has this view
@@ -138,7 +138,7 @@ namespace pazzers
              * \param x The x offset relative on this image's view.
              * \param y The y offset relative on this image's view.
              * */
-            void apply(const ImageView& view, std::uint16_t x, std::uint16_t y);
+            void apply(const ImageView& view, int x, int y);
 
             /**
              * \brief Applies an image, on the image that has this view associated with using the relative coordinates
@@ -147,7 +147,7 @@ namespace pazzers
              * \param x The x offset relative on this image's view.
              * \param y The y offset relative on this image's view.
              * */
-            void apply(const Image& image, std::uint16_t x, std::uint16_t y);
+            void apply(const Image& image, int x, int y);
 
         private:
             /**

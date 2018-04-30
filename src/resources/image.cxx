@@ -7,7 +7,7 @@ namespace pazzers
     {
         Image::Image(SDL_Surface* surface):
             surface(surface),
-            full_view(new ImageView(*this, 0, 0, (std::uint16_t) surface->w, (std::uint16_t) surface->h))
+            full_view(new ImageView(*this, 0, 0, surface->w, surface->h))
         {
             SDL_UnlockSurface(surface);
         }
@@ -35,22 +35,22 @@ namespace pazzers
             SDL_FreeSurface(surface);
         }
 
-        std::uint16_t Image::get_width() const
+        int Image::get_width() const
         {
-            return (std::uint16_t) surface->w;
+            return surface->w;
         }
 
-        std::uint16_t Image::get_height() const
+        int Image::get_height() const
         {
-            return (std::uint16_t) surface->h;
+            return surface->h;
         }
 
-        void Image::apply(const ImageView& view, std::uint16_t x, std::uint16_t y)
+        void Image::apply(const ImageView& view, int x, int y)
         {
             this->full_view->apply(view, x, y);
         }
 
-        void Image::apply(const Image& image, std::uint16_t x, std::uint16_t y)
+        void Image::apply(const Image& image, int x, int y)
         {
             apply(*image.full_view, x, y);
         }
@@ -74,7 +74,7 @@ namespace pazzers
             return new Image(cloned_surface);
         }
 
-        void Image::filter(const std::function<void(std::uint16_t, std::uint16_t, std::uint8_t*)>& f)
+        void Image::filter(const std::function<void(int, int, std::uint8_t*)>& f)
         {
             // Help resources:
             //     - http://sdl.beuc.net/sdl.wiki/Pixel_Access
@@ -121,9 +121,9 @@ namespace pazzers
                     return;
             }
 
-            for (std::uint16_t y = 0, h = (std::uint16_t) surface->h; y < h; ++y)
+            for (int y = 0, h = surface->h; y < h; ++y)
             {
-                for (std::uint16_t x = 0, w = (std::uint16_t) surface->w; x < w; ++x)
+                for (int x = 0, w = surface->w; x < w; ++x)
                 {
                     std::uint8_t* raw = raw_pixels + y * surface->pitch + x * bytes_per_pixel;
                     std::uint32_t data = read(raw);
@@ -135,36 +135,36 @@ namespace pazzers
             SDL_UnlockSurface(surface);
         }
 
-        ImageView::ImageView(const Image& image, std::uint16_t x, std::uint16_t y, std::uint16_t width, std::uint16_t height):
+        ImageView::ImageView(const Image& image, int x, int y, int width, int height):
             image(image)
         {
-            rect.x = x;
-            rect.y = y;
-            rect.w = width;
-            rect.h = height;
+            rect.x = (Sint16) x;
+            rect.y = (Sint16) y;
+            rect.w = (Uint16) width;
+            rect.h = (Uint16) height;
         }
 
         ImageView::~ImageView() = default;
 
-        std::uint16_t ImageView::get_width() const
+        int ImageView::get_width() const
         {
             return rect.w;
         }
 
-        std::uint16_t ImageView::get_height() const
+        int ImageView::get_height() const
         {
             return rect.h;
         }
 
-        void ImageView::apply(const ImageView& view, std::uint16_t x, std::uint16_t y)
+        void ImageView::apply(const ImageView& view, int x, int y)
         {
             SDL_Rect position = {};
-            position.x = rect.x + x;
-            position.y = rect.y + y;
+            position.x = (Sint16) (rect.x + x);
+            position.y = (Sint16) (rect.y + y);
             SDL_BlitSurface(view.image.surface, (SDL_Rect*) &view.rect, this->image.surface, &position);
         }
 
-        void ImageView::apply(const Image& image, std::uint16_t x, std::uint16_t y)
+        void ImageView::apply(const Image& image, int x, int y)
         {
             apply(*image.full_view, x, y);
         }
