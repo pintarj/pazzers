@@ -9,6 +9,7 @@ ADD_EXECUTABLE(pazzers
     src/pazzer.cxx
     src/pazzers.cxx
     src/terrain.cxx
+    src/geometry/rectangle.cxx
     src/resources/cache.cxx
     src/resources/image.cxx
 )

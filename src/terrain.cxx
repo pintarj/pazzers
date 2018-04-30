@@ -68,10 +68,10 @@ namespace pazzers
 
         for (int i = 0; i < 2; ++i)
             for (int j = 0; j < 11; ++j)
-                numbs[i][j] = new resources::ImageView(*number, j * 10, i * 20, 10, 20);
+                numbs[i][j] = new geometry::Rectangle(j * 10, i * 20, 10, 20);
 
         for (int i = 0; i < 5; ++i)
-            skyfall_clip[i] = new resources::ImageView(*skyfall, i * 40, 0, 40, 40);
+            skyfall_clip[i] = new geometry::Rectangle(i * 40, 0, 40, 40);
 
         area[0][0].type=FREE;
         area[0][1].type=FREE;
@@ -297,8 +297,8 @@ namespace pazzers
                         area[i][j].time-=2000;
                         area[i][j].type=BOMB;
                     } else {
-                        window->apply(*skyfall_clip[(SDL_GetTicks()-area[i][j].time)/500], FX1 + i * 40, FY1 + j * 40 - 40);
-                        window->apply(*skyfall_clip[4], FX1 + i * 40, FY1 + j * 40 - (2000 - (SDL_GetTicks() - area[i][j].time)) - 40);
+                        window->apply(*skyfall, *skyfall_clip[(SDL_GetTicks()-area[i][j].time)/500], FX1 + i * 40, FY1 + j * 40 - 40);
+                        window->apply(*skyfall, *skyfall_clip[4], FX1 + i * 40, FY1 + j * 40 - (2000 - (SDL_GetTicks() - area[i][j].time)) - 40);
                     }
                 }
             }

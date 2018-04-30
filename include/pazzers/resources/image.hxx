@@ -5,13 +5,12 @@
 #include <functional>
 #include <string>
 #include <SDL/SDL_video.h>
+#include <pazzers/geometry/rectangle.hxx>
 
 namespace pazzers
 {
     namespace resources
     {
-        class ImageView;
-
         /**
          * \brief Class that represents an image.
          *
@@ -21,9 +20,9 @@ namespace pazzers
         {
         public:
             /**
-             * \brief A view that covers the whole image.
+             * \brief A rectangle which view covers the whole image.
              * */
-            ImageView* const full_view;
+            const geometry::Rectangle* const full_view_rectangle;
 
             /**
              * \brief The SDL_surface associated with this image.
@@ -60,16 +59,17 @@ namespace pazzers
             int get_height() const;
 
             /**
-             * \brief Applies an image, using the specified image view associated with it, on this image on the specified
-             *     offset.
-             * \param view The view associated with the image to apply.
+             * \brief Applies a specified image, using a specified view rectangle, on this image
+             *     on the specified offset.
+             * \param image The image to apply.
+             * \param view The rectangle view on the specified image.
              * \param x The x offset on this image.
              * \param y The y offset on this image.
              * */
-            void apply(const ImageView& view, int x, int y);
+            void apply(const Image& image, const geometry::Rectangle& view, int x, int y);
 
             /**
-             * \brief Applies a specified image, using it's "full_view", on this image on the specified offset.
+             * \brief Applies a specified image, using it's "full view", on this image on the specified offset.
              * \param image The image to apply.
              * \param x The x offset on this image.
              * \param y The y offset on this image.
@@ -90,70 +90,6 @@ namespace pazzers
              *     The new values of the pixel have to be stored directly in the third argument.
              * */
             void filter(const std::function<void(int, int, std::uint8_t*)>& f);
-        };
-
-        /**
-         * \brief Class that represents an image view (a portion of an image).
-         * */
-        class ImageView
-        {
-        public:
-            /**
-             * \brief The image that has this view associated.
-             * */
-            const Image& image;
-
-            /**
-             * \brief Creates an image view for the specified image and with the specified offset coordinates
-             *     and dimensions.
-             * \param image The image that will have this view associated.
-             * \param x The x offset on the image.
-             * \param y The y offset on the image.
-             * \param width The width of the view.
-             * \param width The height of the view.
-             * */
-            ImageView(const Image& image, int x, int y, int width, int height);
-
-            /**
-             * \brief Release the used resources.
-             * */
-            virtual ~ImageView();
-
-            /**
-             * \brief Returns the image's width.
-             * \return The image's width.
-             * */
-            int get_width() const;
-
-            /**
-             * \brief Returns the image's height.
-             * \return The image's height.
-             * */
-            int get_height() const;
-
-            /**
-             * \brief Applies an image, using the specified image view associated with it, on the image that has this view
-             *     associated with using the relative coordinates of this view.
-             * \param view The view associated with the image to apply.
-             * \param x The x offset relative on this image's view.
-             * \param y The y offset relative on this image's view.
-             * */
-            void apply(const ImageView& view, int x, int y);
-
-            /**
-             * \brief Applies an image, on the image that has this view associated with using the relative coordinates
-             *     of this view.
-             * \param view The image to apply.
-             * \param x The x offset relative on this image's view.
-             * \param y The y offset relative on this image's view.
-             * */
-            void apply(const Image& image, int x, int y);
-
-        private:
-            /**
-             * \brief The rectangle that has stored the offset coordinates and dimensions.
-             * */
-            SDL_Rect rect;
         };
     }
 }

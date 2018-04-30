@@ -25,8 +25,8 @@ namespace pazzers
     resources::Image* status_img = nullptr;
     resources::Image* pacman = nullptr;
     resources::Image* life_img = nullptr;
-    resources::ImageView* numbs[2][11];
-    resources::ImageView* skyfall_clip[5];
+    geometry::Rectangle* numbs[2][11];
+    geometry::Rectangle* skyfall_clip[5];
     TTF_Font* font1, * font2;
     SDL_Event event;
 }

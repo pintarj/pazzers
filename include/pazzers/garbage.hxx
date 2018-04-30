@@ -5,7 +5,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 #include <pazzers/pazzer.hxx>
-#include <pazzers/xy.hxx>
+#include <pazzers/geometry/xy.hxx>
 #include <pazzers/resources/image.hxx>
 
 namespace pazzers
@@ -34,8 +34,8 @@ namespace pazzers
     extern resources::Image* status_img;
     extern resources::Image* pacman;
     extern resources::Image* life_img;
-    extern resources::ImageView* numbs[2][11];
-    extern resources::ImageView* skyfall_clip[5];
+    extern geometry::Rectangle* numbs[2][11];
+    extern geometry::Rectangle* skyfall_clip[5];
     extern TTF_Font* font1, * font2;
     extern SDL_Event event;
 }

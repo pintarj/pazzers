@@ -11,7 +11,7 @@ namespace pazzers
 #include <vector>
 #include <SDL/SDL.h>
 #include <pazzers/garbage.hxx>
-#include <pazzers/xy.hxx>
+#include <pazzers/geometry/xy.hxx>
 #include <pazzers/resources/image.hxx>
 
 #define UP 1
@@ -100,7 +100,7 @@ namespace pazzers
 
     private:
         const resources::Image& image;
-        const resources::ImageView* clip[6][3];
+        const geometry::Rectangle* clip[6][3];
 
         SDL_Rect life_clip;
         Uint8 dir;

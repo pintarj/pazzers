@@ -7,7 +7,7 @@ namespace pazzers
     {
         Image::Image(SDL_Surface* surface):
             surface(surface),
-            full_view(new ImageView(*this, 0, 0, surface->w, surface->h))
+            full_view_rectangle(new geometry::Rectangle(0, 0, surface->w, surface->h))
         {
             SDL_UnlockSurface(surface);
         }
@@ -32,6 +32,7 @@ namespace pazzers
 
         Image::~Image()
         {
+            delete full_view_rectangle;
             SDL_FreeSurface(surface);
         }
 
@@ -45,14 +46,24 @@ namespace pazzers
             return surface->h;
         }
 
-        void Image::apply(const ImageView& view, int x, int y)
+        void Image::apply(const Image& image, const geometry::Rectangle& view, int x, int y)
         {
-            this->full_view->apply(view, x, y);
+            SDL_Rect view_rect = {0, 0, 0, 0};
+            view_rect.x = (Sint16) view.x;
+            view_rect.y = (Sint16) view.y;
+            view_rect.w = (Uint16) view.width;
+            view_rect.h = (Uint16) view.height;
+
+            SDL_Rect position_rect = {0, 0, 0, 0};
+            position_rect.x = (Sint16) x;
+            position_rect.y = (Sint16) y;
+
+            SDL_BlitSurface(image.surface, &view_rect, this->surface, &position_rect);
         }
 
         void Image::apply(const Image& image, int x, int y)
         {
-            apply(*image.full_view, x, y);
+            apply(image, *image.full_view_rectangle, x, y);
         }
 
         Image* Image::clone() const
@@ -133,40 +144,6 @@ namespace pazzers
             }
 
             SDL_UnlockSurface(surface);
-        }
-
-        ImageView::ImageView(const Image& image, int x, int y, int width, int height):
-            image(image)
-        {
-            rect.x = (Sint16) x;
-            rect.y = (Sint16) y;
-            rect.w = (Uint16) width;
-            rect.h = (Uint16) height;
-        }
-
-        ImageView::~ImageView() = default;
-
-        int ImageView::get_width() const
-        {
-            return rect.w;
-        }
-
-        int ImageView::get_height() const
-        {
-            return rect.h;
-        }
-
-        void ImageView::apply(const ImageView& view, int x, int y)
-        {
-            SDL_Rect position = {};
-            position.x = (Sint16) (rect.x + x);
-            position.y = (Sint16) (rect.y + y);
-            SDL_BlitSurface(view.image.surface, (SDL_Rect*) &view.rect, this->image.surface, &position);
-        }
-
-        void ImageView::apply(const Image& image, int x, int y)
-        {
-            apply(*image.full_view, x, y);
         }
     }
 }
