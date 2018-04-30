@@ -40,12 +40,12 @@ namespace pazzers
              * \param width The width of the rectangle.
              * \param width The height of the rectangle.
              * */
-            Rectangle(int x, int y, int width, int height);
+            Rectangle(int x, int y, int width, int height) noexcept;
 
             /**
              * \brief Default implementation
              * */
-            virtual ~Rectangle() = default;
+            virtual ~Rectangle() noexcept = default;
         };
     }
 }

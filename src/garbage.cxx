@@ -10,12 +10,6 @@ namespace pazzers
     int FPS = 35;
     int pro_pac = 0;
     int pro_block = 75;
-    const int button[4][5] = {
-        SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_RCTRL,
-        SDLK_w, SDLK_s, SDLK_a, SDLK_d, SDLK_TAB,
-        SDLK_i, SDLK_k, SDLK_j, SDLK_l, SDLK_SPACE,
-        SDLK_KP_DIVIDE, SDLK_KP8, SDLK_KP7, SDLK_KP9, SDLK_KP0
-    };
     const int initxy[4][2] = {214, 69, 934, 710, 934, 69, 214, 710};
     XY pacXY = {-1, -1};
     resources::Image* window = nullptr;
@@ -28,5 +22,4 @@ namespace pazzers
     geometry::Rectangle* numbs[2][11];
     geometry::Rectangle* skyfall_clip[5];
     TTF_Font* font1, * font2;
-    SDL_Event event;
 }

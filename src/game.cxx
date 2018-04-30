@@ -3,11 +3,9 @@
 
 namespace pazzers
 {
-    Game::Game(std::vector<const PazzerDescriptor*>&& pazzer_descriptors)
+    Game::Game(std::vector<Pazzer*>&& players):
+        players(players)
     {
-        for (auto descriptor : pazzer_descriptors)
-            players.emplace_back(new Pazzer(*descriptor));
-
         status_img = new resources::Image("res/arena/status.bmp");
         life_img = new resources::Image("res/arena/life.bmp");
         number = new resources::Image("res/arena/number.bmp");
@@ -38,22 +36,21 @@ namespace pazzers
         TTF_CloseFont(font2);
     }
 
+    void Game::on_keydown(int key)
+    {
+        flow::KeyListener::on_keydown(key);
+    }
+
+    void Game::on_keyup(int key)
+    {
+        flow::KeyListener::on_keyup(key);
+    }
+
     bool Game::update_scene(float delta)
     {
-        while (SDL_PollEvent(&event))
-        {
-            if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP)
-            {
-                for (auto player : players)
-                {
-                    if (player->dead == -1)
-                        player->handle(event.key.keysym.sym, event.type);
-                }
-            }
+        for (auto& player : players)
+            player->update(delta);
 
-            if (event.type == SDL_QUIT)
-                return true;
-        }
         SDL_FillRect(window->surface, &window->surface->clip_rect, 0x000000);
 
         for (auto player : players)

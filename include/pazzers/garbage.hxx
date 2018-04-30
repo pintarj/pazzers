@@ -24,7 +24,6 @@ namespace pazzers
     extern int FPS;
     extern int pro_pac;
     extern int pro_block;
-    extern const int button[4][5];
     extern const int initxy[4][2];
     extern XY pacXY;
     extern resources::Image* window;
@@ -37,7 +36,6 @@ namespace pazzers
     extern geometry::Rectangle* numbs[2][11];
     extern geometry::Rectangle* skyfall_clip[5];
     extern TTF_Font* font1, * font2;
-    extern SDL_Event event;
 }
 
 #endif

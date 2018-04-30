@@ -1,6 +1,6 @@
 
-#ifndef PAZZERS_MEN_HXX
-#define PAZZERS_MEN_HXX
+#ifndef PAZZERS_GAME_PAZZER_HXX
+#define PAZZERS_GAME_PAZZER_HXX
 
 namespace pazzers
 {
@@ -11,13 +11,11 @@ namespace pazzers
 #include <vector>
 #include <SDL/SDL.h>
 #include <pazzers/garbage.hxx>
+#include <pazzers/flow/key-listener.hxx>
+#include <pazzers/game/virtual-controller.hxx>
 #include <pazzers/geometry/xy.hxx>
 #include <pazzers/resources/image.hxx>
 
-#define UP 1
-#define DOWN 0
-#define LEFT 3
-#define RIGHT 2
 #define FX1 214
 #define FX2 974
 #define FY1 79
@@ -68,9 +66,17 @@ namespace pazzers
         static const std::vector<const PazzerDescriptor*>& get_all();
     };
 
+    /**
+     * \brief A class that represent a single player in a game.
+     * */
     class Pazzer
     {
     public:
+        /**
+         * \brief The unique id of the player in the game.
+         * */
+        const int id;
+
         /**
          * \brief The pazzer descriptor.
          * */
@@ -80,33 +86,51 @@ namespace pazzers
          * \brief Create a new pazzer.
          * \param descriptor The pazzer's descriptor.
          * */
-        Pazzer(const PazzerDescriptor& descriptor);
+        Pazzer(const PazzerDescriptor& descriptor, game::VirtualController* controller);
 
         /**
          * \brief Release the used resources.
          * */
         ~Pazzer();
 
+        /**
+         * \brief Update the pazzer.
+         * \param delta The amount of time that is going to be updated, in seconds.
+         * */
+        void update(float delta);
+
         XY xy[4];
-        int id, mun, life, dead, mun_max, atk, def, dmg;
+        int mun, life, dead, mun_max, atk, def, dmg;
         void make_fun(int phase);
         void status();
         void show();
         int alive(Uint8 i);
-        void handle(int msg, int type);
         void move();
         void check();
 
     private:
+        /**
+         * \brief The image that represent the pazzer.
+         * */
         const resources::Image& image;
 
-        Uint8 dir;
+        /**
+         * \brief The virtual controller that controls the pazzers.
+         */
+        game::VirtualController* controller;
+
+        /**
+         * \brief Tells the direction of the pazzer.
+         * */
+        geometry::Direction direction;
+
+        /**
+         * \brief Tells if the pazzers is moving.
+         * */
+        bool in_movement;
+
         Uint8 count;
-        int up, down, left, right, drop;
-        XY joy;
-        bool mov;
         int power, speed, time, pac;
-        int cheat[10];
         struct _message {
             XY xy;
             int time;

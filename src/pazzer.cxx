@@ -14,7 +14,31 @@ namespace pazzers
         };
 
     static std::vector<const PazzerDescriptor*> descriptors;
-    static int last_id = 0;
+    static int last_id = -1;
+
+    static int pazzer_view_index_from_direction(geometry::Direction direction)
+    {
+        using namespace geometry;
+
+        switch (direction)
+        {
+            case Direction::UP:
+                return 1;
+
+            case Direction::RIGHT:
+                return 2;
+
+            case Direction::DOWN:
+                return 0;
+
+            case Direction::LEFT:
+                return 3;
+
+            default:
+                // TODO Should throw error.
+                return 0;
+        }
+    }
 
     static void show_num(int x, int y, const char* str)
     {
@@ -80,11 +104,14 @@ namespace pazzers
         return descriptors;
     }
 
-    Pazzer::Pazzer(const PazzerDescriptor& descriptor):
-            descriptor(descriptor),
-            image(resources::cache::get_image(descriptor.image_path))
+    Pazzer::Pazzer(const PazzerDescriptor& descriptor, game::VirtualController* controller):
+        id(++last_id),
+        descriptor(descriptor),
+        controller(controller),
+        image(resources::cache::get_image(descriptor.image_path)),
+        direction(geometry::Direction::DOWN),
+        in_movement(false)
     {
-        dir = DOWN;
         mun = 2;
         pac = 0;
         mun_max = mun;
@@ -92,32 +119,17 @@ namespace pazzers
         atk = 26;
         def = 1;
         life = 100;
-        id = last_id++;
         count = 0;
         time = SDL_GetTicks() - 4000;
         xy[0].x = initxy[id][0];
         xy[0].y = initxy[id][1];
-        joy.x = 0;
-        joy.y = 0;
         message.time = -1;
         dead = -1;
         dmg = 0;
         speed = 120 / FPS;
-        mov = false;
-        up = button[id][0];
-        down = button[id][1];
-        left = button[id][2];
-        right = button[id][3];
-        drop = button[id][4];
-
-        for (int &i : cheat)
-            i = 0;
     }
 
-    Pazzer::~Pazzer()
-    {
-
-    }
+    Pazzer::~Pazzer() = default;
 
     void Pazzer::status()
     {
@@ -191,90 +203,62 @@ namespace pazzers
             dead = -2;
     }
 
-    void Pazzer::handle(int msg, int type)
+    void Pazzer::update(float delta)
     {
-        switch (type)
+        if (dead != -1)
+            return;
+
+        if (controller->is_bomb_drop_required())
         {
-            case SDL_KEYDOWN:
+            if (area[xy[3].x][xy[3].y].type == 0 && mun > 0)
             {
-                if (msg == SDLK_ESCAPE) exit(0);
-                if (msg == SDLK_t) SDL_SaveBMP(window->surface, "shot.bmp");
-                if (msg == up)
-                {
-                    dir = UP;
-                    mov = true;
-                }
-                if (msg == down)
-                {
-                    dir = DOWN;
-                    mov = true;
-                }
-                if (msg == left)
-                {
-                    dir = LEFT;
-                    mov = true;
-                }
-                if (msg == right)
-                {
-                    dir = RIGHT;
-                    mov = true;
-                }
-                if (msg == drop)
-                {
-                    if (area[xy[3].x][xy[3].y].type == 0 && mun > 0)
-                    {
-                        area[xy[3].x][xy[3].y].owner = id;
-                        area[xy[3].x][xy[3].y].type = 1;
-                        area[xy[3].x][xy[3].y].time = SDL_GetTicks();
-                        area[xy[3].x][xy[3].y].power = power;
-                        area[xy[3].x][xy[3].y].img = 0;
-                        area[xy[3].x][xy[3].y].atk = atk;
-                        mun--;
-                    }
-                }
-
-                for (int i = 9; i > 0; i--)
-                    cheat[i] = cheat[i - 1];
-
-                cheat[0] = dir;
-                break;
+                area[xy[3].x][xy[3].y].owner = id;
+                area[xy[3].x][xy[3].y].type = 1;
+                area[xy[3].x][xy[3].y].time = SDL_GetTicks();
+                area[xy[3].x][xy[3].y].power = power;
+                area[xy[3].x][xy[3].y].img = 0;
+                area[xy[3].x][xy[3].y].atk = atk;
+                mun--;
             }
-            case SDL_KEYUP:
-            {
-                if (((dir == UP) && (msg == up)) ||
-                    ((dir == DOWN) && (msg == down)) ||
-                    ((dir == LEFT) && (msg == left)) ||
-                    ((dir == RIGHT) && (msg == right))
-                    )
-                    mov = false;
-                break;
-            }
+        }
+
+        auto new_direction = controller->get_direction();
+
+        if (new_direction == geometry::Direction::NONE)
+            in_movement = false;
+        else
+        {
+            direction = new_direction;
+            in_movement = true;
         }
     }
 
-
     int Pazzer::alive(Uint8 i)
     {
-        if (!mov) return 0;
+        if (!in_movement)
+            return 0;
+
         if (i < 4)
-        { return 0; }
+            return 0;
         else if (i < 12)
-        { return 1; }
+            return 1;
         else if (i < 16)
-        { return 0; }
-        else if (i < 23)
-        { return 2; }
+            return 0;
+        else
+            return 2;
     }
 
 
     void Pazzer::show()
     {
+        const int view_index = pazzer_view_index_from_direction(direction);
+
         if (pac)
             // should draw pacman
-            window->apply(image, pazzer_views[dir][alive(++count)], xy[0].x, xy[0].y - 40);
+            window->apply(image, pazzer_views[view_index][alive(++count)], xy[0].x, xy[0].y - 40);
         else
             // should blink with negative
-            window->apply(image, pazzer_views[dir][alive(++count)], xy[0].x, xy[0].y - 40);
+            window->apply(image, pazzer_views[view_index][alive(++count)], xy[0].x, xy[0].y - 40);
 
         count %= 22;
 
@@ -291,22 +275,30 @@ namespace pazzers
 
     void Pazzer::move()
     {
-        if (mov)
-            switch (dir)
+        if (in_movement)
+        {
+            switch (direction)
             {
-                case UP:
+                case geometry::Direction::UP:
                     xy[0].y += -speed;
                     break;
-                case DOWN:
+
+                case geometry::Direction::DOWN:
                     xy[0].y += speed;
                     break;
-                case LEFT:
+
+                case geometry::Direction::LEFT:
                     xy[0].x += -speed;
                     break;
-                case RIGHT:
+
+                case geometry::Direction::RIGHT:
                     xy[0].x += speed;
                     break;
+
+                default:
+                    break;
             }
+        }
 
         xy[1].x = xy[0].x + 2;
         xy[1].y = xy[0].y + 12;
@@ -327,24 +319,28 @@ namespace pazzers
             xy[0].x += FX1 - xy[1].x;
             xy[1].x = xy[0].x + 2;
         }
+
         if (xy[1].y < FY1)
         {
             xy[0].y += FY1 - xy[1].y;
             xy[1].y = xy[0].y + 12;
         }
+
         if (xy[2].x > FX2)
         {
             xy[0].x += FX2 - xy[2].x;
             xy[2].x = xy[0].x + 38;
         }
+
         if (xy[2].y > FY2)
         {
             xy[0].y += FY2 - xy[2].y;
             xy[2].y = xy[0].y + 49;
         }
-        switch (dir)
+
+        switch (direction)
         {
-            case UP:
+            case geometry::Direction::UP:
             {
                 int my_x = (((xy[1].x - 215) / 80) * 80 + 255);
                 if ((((xy[1].y - 40) / 40) % 2 == 0) &&
@@ -361,7 +357,8 @@ namespace pazzers
                 }
                 break;
             }
-            case DOWN:
+
+            case geometry::Direction::DOWN:
             {
                 int my_x = (((xy[1].x - 215) / 80) * 80 + 255);
                 if ((((xy[2].y - 40) / 40) % 2 == 0) &&
@@ -378,7 +375,8 @@ namespace pazzers
                 }
                 break;
             }
-            case RIGHT:
+
+            case geometry::Direction::RIGHT:
             {
                 int my_y = (40 + 80 * (xy[1].y / 80));
                 if ((((xy[2].x - 175) / 40) % 2 == 0) &&
@@ -396,7 +394,8 @@ namespace pazzers
                     }
                 break;
             }
-            case LEFT:
+
+            case geometry::Direction::LEFT:
             {
                 int my_y = (40 + 80 * (xy[1].y / 80));
                 if ((((xy[1].x - 175) / 40) % 2 == 0) &&
@@ -413,7 +412,11 @@ namespace pazzers
                 }
                 break;
             }
+
+            default:
+                break;
         }
+
         if (pac)
         {
             pacXY.x = xy[3].x;
@@ -453,8 +456,12 @@ namespace pazzers
                 }
             }
         }
-        if (SDL_GetTicks() - time > 4500 && dmg == 1) dmg = 0;
-        if (life < 0) life = 0;
+
+        if (SDL_GetTicks() - time > 4500 && dmg == 1)
+            dmg = 0;
+
+        if (life < 0)
+            life = 0;
         else if (area[xy[3].x][xy[3].y].type == BS_BOMB)
         {
             area[xy[3].x][xy[3].y].type = FREE;
@@ -536,18 +543,6 @@ namespace pazzers
         {
             dead = SDL_GetTicks();
             count = 0;
-        }
-        for (i = 0; (cheat[i] == i % 2) && (i < 10); i++);
-        if (i == 10)
-        {
-            area[xy[3].x][xy[3].y].type = BS_SKY;
-            cheat[0] = 8;
-        }
-        for (i = 0; (cheat[i] == (i % 2) + 2) && (i < 10); i++);
-        if (i == 10)
-        {
-            life = 75;
-            cheat[0] = 8;
         }
     }
 }

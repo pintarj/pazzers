@@ -2,6 +2,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 #include <pazzers/game.hxx>
+#include <pazzers/game/key-controller.hxx>
 #include <pazzers/resources/cache.hxx>
 
 using namespace pazzers;
@@ -40,23 +41,30 @@ static void destroy()
     SDL_Quit();
 }
 
-static std::vector<const PazzerDescriptor*> load_pazzers_descriptors()
-{
-    std::vector<const PazzerDescriptor*> pazzer_descriptors;
-    auto all = PazzerDescriptor::get_all();
-    pazzer_descriptors.emplace_back(all.at(0));
-    pazzer_descriptors.emplace_back(all.at(1));
-    pazzer_descriptors.emplace_back(all.at(2));
-    pazzer_descriptors.emplace_back(all.at(3));
-    return std::move(pazzer_descriptors);
-}
-
 int main(int argc, char* argv[])
 {
     if (!initialize())
         return 1;
 
-    auto         game       = new Game(load_pazzers_descriptors());
+    game::KeyController* controllers[4] =
+        {
+            new game::KeyController(game::KeyControllerMap::ARROWS),
+            new game::KeyController(game::KeyControllerMap::WASD),
+            new game::KeyController(game::KeyControllerMap::IJKL),
+            new game::KeyController(game::KeyControllerMap::NUMPAD)
+        };
+
+    auto descriptors = PazzerDescriptor::get_all();
+    std::vector<Pazzer*> players;
+
+    for (int i = 0; i < 4; ++i)
+        players.emplace_back(new Pazzer(*descriptors.at((unsigned) i), controllers[i]));
+
+    auto game = new Game(std::move(players));
+
+    for (int i = 0; i < 4; ++i)
+        game->listeners.insert(controllers[i]);
+
     bool         quit       = false;
     const int    target_fps = 60;
     const Uint32 delta_ms   = 1000 / target_fps;
@@ -65,6 +73,46 @@ int main(int argc, char* argv[])
 
     while (true)
     {
+        static SDL_Event event;
+
+        while (SDL_PollEvent(&event))
+        {
+            switch (event.type)
+            {
+                case SDL_QUIT:
+                    quit = true;
+                    break;
+
+                case SDL_KEYDOWN:
+                    game->on_keydown(event.key.keysym.sym);
+                    break;
+
+                case SDL_KEYUP:
+                {
+                    int key = event.key.keysym.sym;
+
+                    switch (key)
+                    {
+                        case SDLK_ESCAPE:
+                            quit = true;
+                            break;
+
+                        default:
+                            game->on_keyup(key);
+                            break;
+                    }
+
+                    break;
+                }
+
+                default:
+                    break;
+            }
+        }
+
+        if (quit)
+            break;
+
         quit = game->update_scene(delta);
 
         if (quit)
@@ -81,6 +129,9 @@ int main(int argc, char* argv[])
 
         timestamp = new_timestamp;
     }
+
+    for (int i = 0; i < 4; ++i)
+        delete controllers[i];
 
     delete game;
     resources::cache::free_all();
