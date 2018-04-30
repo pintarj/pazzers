@@ -13,7 +13,7 @@ namespace pazzers
         status_img = LoadImageSDL("res/arena/status.bmp");
         life_img = LoadImageSDL("res/arena/life.bmp");
         number = LoadImageSDL("res/arena/number.bmp");
-        field = new Image("res/arena/Field.bmp");
+        field = new resources::Image("res/arena/Field.bmp");
         pacman = LoadImageSDL("res/arena/pac.bmp");
         skyfall = LoadImageSDL("res/arena/skyfall.bmp");
         font1 = TTF_OpenFont("res/arena/Ubuntu-R.ttf", 16);

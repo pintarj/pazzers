@@ -2,6 +2,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 #include <pazzers/game.hxx>
+#include <pazzers/resources/cache.hxx>
 
 using namespace pazzers;
 
@@ -19,7 +20,7 @@ static bool initialize()
         return false;
     }
 
-    window = new Image(SDL_SetVideoMode(1200, 800, DEPTH, SDL_HWSURFACE));
+    window = new resources::Image(SDL_SetVideoMode(1200, 800, DEPTH, SDL_HWSURFACE));
 
     if (window == nullptr)
     {
@@ -82,6 +83,7 @@ int main(int argc, char* argv[])
     }
 
     delete game;
+    resources::cache::free_all();
     destroy();
     return 0;
 }

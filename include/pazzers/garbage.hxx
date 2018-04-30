@@ -4,9 +4,9 @@
 
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
-#include <pazzers/image.hxx>
 #include <pazzers/pazzer.hxx>
 #include <pazzers/xy.hxx>
+#include <pazzers/resources/image.hxx>
 
 namespace pazzers
 {
@@ -31,8 +31,8 @@ namespace pazzers
     extern const int initxy[4][2];
     extern XY pacXY;
     extern SDL_Joystick* stick;
-    extern Image* window;
-    extern Image* field;
+    extern resources::Image* window;
+    extern resources::Image* field;
     extern SDL_Surface* number;
     extern SDL_Surface* skyfall;
     extern SDL_Surface* status_img;

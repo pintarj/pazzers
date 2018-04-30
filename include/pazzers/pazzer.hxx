@@ -94,6 +94,7 @@ namespace pazzers
 
         /**
          * \brief Create a new pazzer.
+         * \param descriptor The pazzer's descriptor.
          * */
         Pazzer(const PazzerDescriptor& descriptor);
 

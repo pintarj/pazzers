@@ -1,7 +1,7 @@
 #include <pazzers/garbage.hxx>
 #include <time.h>
 #include <SDL/SDL_image.h>
-#include <pazzers/image.hxx>
+#include <pazzers/resources/image.hxx>
 #include <pazzers/terrain.hxx>
 
 namespace pazzers
@@ -21,9 +21,9 @@ namespace pazzers
     };
     const int initxy[4][2] = {214, 69, 934, 710, 934, 69, 214, 710};
     XY pacXY = {-1, -1};
-    Image* window = nullptr;
+    resources::Image* window = nullptr;
     SDL_Joystick* stick = NULL;
-    Image* field = nullptr;
+    resources::Image* field = nullptr;
     SDL_Surface* number = NULL;
     SDL_Surface* skyfall = NULL;
     SDL_Surface* status_img = NULL;

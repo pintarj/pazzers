@@ -51,7 +51,7 @@ namespace pazzers
         atk = 26;
         def = 1;
         life = 100;
-        id = ++last_id;
+        id = last_id++;
         count = 0;
         time = SDL_GetTicks() - 4000;
         xy[0].x = initxy[id][0];
@@ -129,7 +129,6 @@ namespace pazzers
         text = TTF_RenderText_Solid(font2, (const char*) str, black);
         ApplySurfaceSDL(speed > 9 ? 45 : 47, id * 190 + 187, text, window->surface, NULL);
         SDL_FreeSurface(text);
-
     }
 
     void Pazzer::make_fun(int phase)
