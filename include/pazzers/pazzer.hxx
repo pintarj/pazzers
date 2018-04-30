@@ -88,7 +88,6 @@ namespace pazzers
         ~Pazzer();
 
         XY xy[4];
-        bool alter;
         int id, mun, life, dead, mun_max, atk, def, dmg;
         void make_fun(int phase);
         void status();
@@ -100,9 +99,7 @@ namespace pazzers
 
     private:
         const resources::Image& image;
-        const geometry::Rectangle* clip[6][3];
 
-        SDL_Rect life_clip;
         Uint8 dir;
         Uint8 count;
         int up, down, left, right, drop;

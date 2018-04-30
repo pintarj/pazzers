@@ -3,6 +3,16 @@
 
 namespace pazzers
 {
+    static const geometry::Rectangle pazzer_views[6][3] =
+        {
+            {{0,   0, 40, 50}, {40,   0, 40, 50}, {80,   0, 40, 50}},
+            {{0,  50, 40, 50}, {40,  50, 40, 50}, {80,  50, 40, 50}},
+            {{0, 100, 40, 50}, {40, 100, 40, 50}, {80, 100, 40, 50}},
+            {{0, 150, 40, 50}, {40, 150, 40, 50}, {80, 150, 40, 50}},
+            {{0, 200, 40, 50}, {40, 200, 40, 50}, {80, 200, 40, 50}},
+            {{0, 250, 40, 50}, {40, 250, 40, 50}, {80, 250, 40, 50}}
+        };
+
     static std::vector<const PazzerDescriptor*> descriptors;
     static int last_id = 0;
 
@@ -94,7 +104,6 @@ namespace pazzers
         dmg = 0;
         speed = 120 / FPS;
         mov = false;
-        alter = false;
         up = button[id][0];
         down = button[id][1];
         left = button[id][2];
@@ -103,27 +112,11 @@ namespace pazzers
 
         for (int &i : cheat)
             i = 0;
-
-        for (int y = 0; y < 6; y++)
-        {
-            for (int x = 0; x < 3; x++)
-            {
-                auto offset_x = x * 40;
-                auto offset_y = y * 50;
-                clip[y][x] = new geometry::Rectangle(offset_x, offset_y, 40, 50);
-            }
-        }
-
-        life_clip.x = 2;
-        life_clip.y = 0;
-        life_clip.h = 19;
     }
 
     Pazzer::~Pazzer()
     {
-        for (auto &row : clip)
-            for (auto &view : row)
-                delete view;
+
     }
 
     void Pazzer::status()
@@ -132,7 +125,7 @@ namespace pazzers
         char str[10];
 
         window->apply(*status_img, 17, 10 + id * 190);
-        window->apply(image, *clip[dead == -2 ? 5 : 0][0], 67, 30 + id * 190);
+        window->apply(image, pazzer_views[dead == -2 ? 5 : 0][0], 67, 30 + id * 190);
         geometry::Rectangle life_clip(2, 0, life, 19);
         window->apply(*life_img, life_clip, 54, 90 + id * 190);
 
@@ -175,19 +168,19 @@ namespace pazzers
 
         if (phase < 1500)
         {
-            window->apply(image, *clip[4][(phase / 250) % 2], xy[0].x, xy[0].y - 40);
+            window->apply(image, pazzer_views[4][(phase / 250) % 2], xy[0].x, xy[0].y - 40);
         }
         else if (phase < 1750)
         {
-            window->apply(image, *clip[4][2], xy[0].x, xy[0].y - 40);
+            window->apply(image, pazzer_views[4][2], xy[0].x, xy[0].y - 40);
         }
         else if (phase < 1900)
         {
-            window->apply(image, *clip[5][2], xy[0].x, xy[0].y - 40);
+            window->apply(image, pazzer_views[5][2], xy[0].x, xy[0].y - 40);
         }
         else if (xy[0].y > -50)
         {
-            window->apply(image, *clip[5][(phase / 100) % 2], xy[0].x, xy[0].y - 40);
+            window->apply(image, pazzer_views[5][(phase / 100) % 2], xy[0].x, xy[0].y - 40);
 
             xy[0].y -= count / 2;
 
@@ -278,10 +271,10 @@ namespace pazzers
     {
         if (pac)
             // should draw pacman
-            window->apply(image, *clip[dir][alive(++count)], xy[0].x, xy[0].y - 40);
+            window->apply(image, pazzer_views[dir][alive(++count)], xy[0].x, xy[0].y - 40);
         else
             // should blink with negative
-            window->apply(image, *clip[dir][alive(++count)], xy[0].x, xy[0].y - 40);
+            window->apply(image, pazzer_views[dir][alive(++count)], xy[0].x, xy[0].y - 40);
 
         count %= 22;
 
