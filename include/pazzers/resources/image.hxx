@@ -2,6 +2,7 @@
 #ifndef PAZZERS_RESOURCES_IMAGE_HXX
 #define PAZZERS_RESOURCES_IMAGE_HXX
 
+#include <functional>
 #include <string>
 #include <SDL/SDL_video.h>
 
@@ -74,6 +75,21 @@ namespace pazzers
              * \param y The y offset on this image.
              * */
             void apply(const Image& image, std::uint16_t x, std::uint16_t y);
+
+            /**
+             * \brief Create a clone of this image.
+             * \return The clone.
+             *
+             * The clone should be then deleted with "delete".
+             * */
+            Image* clone() const;
+
+            /**
+             * \brief Performs a per-pixel filter.
+             * \param f The function will accept the x and y coordinates and then the values of the current pixel.
+             *     The new values of the pixel have to be stored directly in the third argument.
+             * */
+            void filter(const std::function<void(std::uint16_t, std::uint16_t, std::uint8_t*)>& f);
         };
 
         /**
