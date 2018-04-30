@@ -163,108 +163,61 @@ namespace pazzers
 
     void Pazzer::handle(int msg, int type)
     {
-        int i;
+        switch (type)
+        {
+            case SDL_KEYDOWN:
+            {
+                if (msg == SDLK_ESCAPE) exit(0);
+                if (msg == SDLK_t) SDL_SaveBMP(window->surface, "shot.bmp");
+                if (msg == up)
+                {
+                    dir = UP;
+                    mov = true;
+                }
+                if (msg == down)
+                {
+                    dir = DOWN;
+                    mov = true;
+                }
+                if (msg == left)
+                {
+                    dir = LEFT;
+                    mov = true;
+                }
+                if (msg == right)
+                {
+                    dir = RIGHT;
+                    mov = true;
+                }
+                if (msg == drop)
+                {
+                    if (area[xy[3].x][xy[3].y].type == 0 && mun > 0)
+                    {
+                        area[xy[3].x][xy[3].y].owner = id;
+                        area[xy[3].x][xy[3].y].type = 1;
+                        area[xy[3].x][xy[3].y].time = SDL_GetTicks();
+                        area[xy[3].x][xy[3].y].power = power;
+                        area[xy[3].x][xy[3].y].img = 0;
+                        area[xy[3].x][xy[3].y].atk = atk;
+                        mun--;
+                    }
+                }
 
-        if (alter && event.type == SDL_JOYAXISMOTION)
-        {
-            if (event.jaxis.axis == 0) joy.x = event.jaxis.value;
-            if (event.jaxis.axis == 1) joy.y = event.jaxis.value;
-            if (abs(joy.x) > 8000 || abs(joy.y) > 8000)
-            {
-                mov = true;
-                if (abs(joy.y) < abs(joy.x))
-                {
-                    if (joy.x > 0)
-                        dir = RIGHT;
-                    else
-                        dir = LEFT;
-                }
-                else
-                {
-                    if (joy.y > 0)
-                        dir = DOWN;
-                    else
-                        dir = UP;
-                }
-                if (cheat[0] != dir)
-                {
-                    for (i = 9; i > 0; i--) cheat[i] = cheat[i - 1];
-                    cheat[i] = dir;
-                }
+                for (int i = 9; i > 0; i--)
+                    cheat[i] = cheat[i - 1];
+
+                cheat[0] = dir;
+                break;
             }
-            else mov = false;
-        }
-        else if (alter && event.type == SDL_JOYBUTTONDOWN)
-        {
-            if ((event.jbutton.button) && (mun > 0))
+            case SDL_KEYUP:
             {
-                if (area[xy[3].x][xy[3].y].type == 0 && mun > 0)
-                {
-                    area[xy[3].x][xy[3].y].owner = id;
-                    area[xy[3].x][xy[3].y].type = 1;
-                    area[xy[3].x][xy[3].y].time = SDL_GetTicks();
-                    area[xy[3].x][xy[3].y].power = power;
-                    area[xy[3].x][xy[3].y].img = 0;
-                    area[xy[3].x][xy[3].y].atk = atk;
-                    mun--;
-                }
-            }
-        }
-        else if (alter == false)
-        {
-            switch (type)
-            {
-                case SDL_KEYDOWN:
-                {
-                    if (msg == SDLK_ESCAPE) exit(0);
-                    if (msg == SDLK_t) SDL_SaveBMP(window->surface, "shot.bmp");
-                    if (msg == up)
-                    {
-                        dir = UP;
-                        mov = true;
-                    }
-                    if (msg == down)
-                    {
-                        dir = DOWN;
-                        mov = true;
-                    }
-                    if (msg == left)
-                    {
-                        dir = LEFT;
-                        mov = true;
-                    }
-                    if (msg == right)
-                    {
-                        dir = RIGHT;
-                        mov = true;
-                    }
-                    if (msg == drop)
-                    {
-                        if (area[xy[3].x][xy[3].y].type == 0 && mun > 0)
-                        {
-                            area[xy[3].x][xy[3].y].owner = id;
-                            area[xy[3].x][xy[3].y].type = 1;
-                            area[xy[3].x][xy[3].y].time = SDL_GetTicks();
-                            area[xy[3].x][xy[3].y].power = power;
-                            area[xy[3].x][xy[3].y].img = 0;
-                            area[xy[3].x][xy[3].y].atk = atk;
-                            mun--;
-                        }
-                    }
-                    for (i = 9; i > 0; i--) cheat[i] = cheat[i - 1];
-                    cheat[i] = dir;
-                    break;
-                }
-                case SDL_KEYUP:
-                {
-                    if (((dir == UP) && (msg == up)) ||
-                        ((dir == DOWN) && (msg == down)) ||
-                        ((dir == LEFT) && (msg == left)) ||
-                        ((dir == RIGHT) && (msg == right))
-                        )
-                        mov = false;
-                    break;
-                }
+                if (((dir == UP) && (msg == up)) ||
+                    ((dir == DOWN) && (msg == down)) ||
+                    ((dir == LEFT) && (msg == left)) ||
+                    ((dir == RIGHT) && (msg == right))
+                    )
+                    mov = false;
+                break;
             }
         }
     }
@@ -272,7 +225,7 @@ namespace pazzers
 
     int Pazzer::alive(Uint8 i)
     {
-        if (mov == false) return 0;
+        if (!mov) return 0;
         if (i < 4)
         { return 0; }
         else if (i < 12)
@@ -305,7 +258,7 @@ namespace pazzers
 
     void Pazzer::move()
     {
-        if (mov == true)
+        if (mov)
             switch (dir)
             {
                 case UP:
@@ -321,6 +274,7 @@ namespace pazzers
                     xy[0].x += speed;
                     break;
             }
+
         xy[1].x = xy[0].x + 2;
         xy[1].y = xy[0].y + 12;
         xy[2].x = xy[0].x + 38;

@@ -20,7 +20,7 @@ static bool initialize()
         return false;
     }
 
-    window = new resources::Image(SDL_SetVideoMode(1200, 800, DEPTH, SDL_HWSURFACE));
+    window = new resources::Image(SDL_SetVideoMode(1200, 800, 32, SDL_HWSURFACE));
 
     if (window == nullptr)
     {

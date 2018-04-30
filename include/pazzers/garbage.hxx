@@ -24,13 +24,9 @@ namespace pazzers
     extern int FPS;
     extern int pro_pac;
     extern int pro_block;
-    extern const int WIDTH;
-    extern const int HEIGHT;
-    extern const int DEPTH;
     extern const int button[4][5];
     extern const int initxy[4][2];
     extern XY pacXY;
-    extern SDL_Joystick* stick;
     extern resources::Image* window;
     extern resources::Image* field;
     extern SDL_Surface* number;
@@ -43,10 +39,7 @@ namespace pazzers
     extern TTF_Font* font1, * font2;
     extern SDL_Event event;
     extern SDL_Color black;
-    extern SDL_Color white;
 
-    int sqr(int n, int x);
-    void NegativeSDL(SDL_Surface* surface);
     SDL_Surface* LoadImageSDL(const char* filename);
     void ApplySurfaceSDL(int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip = NULL);
     void show_num(int* x, int* y, const char* str, int t);
