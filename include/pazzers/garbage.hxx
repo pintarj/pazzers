@@ -29,20 +29,15 @@ namespace pazzers
     extern XY pacXY;
     extern resources::Image* window;
     extern resources::Image* field;
-    extern SDL_Surface* number;
-    extern SDL_Surface* skyfall;
-    extern SDL_Surface* status_img;
-    extern SDL_Surface* pacman;
-    extern SDL_Surface* life_img;
-    extern SDL_Surface* text;
-    extern SDL_Rect numbs[11][2];
+    extern resources::Image* number;
+    extern resources::Image* skyfall;
+    extern resources::Image* status_img;
+    extern resources::Image* pacman;
+    extern resources::Image* life_img;
+    extern resources::ImageView* numbs[2][11];
+    extern resources::ImageView* skyfall_clip[5];
     extern TTF_Font* font1, * font2;
     extern SDL_Event event;
-    extern SDL_Color black;
-
-    SDL_Surface* LoadImageSDL(const char* filename);
-    void ApplySurfaceSDL(int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip = NULL);
-    void show_num(int* x, int* y, const char* str, int t);
 }
 
 #endif

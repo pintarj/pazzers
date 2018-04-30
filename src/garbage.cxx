@@ -10,7 +10,6 @@ namespace pazzers
     int FPS = 35;
     int pro_pac = 0;
     int pro_block = 75;
-    const int DEPTH = 32;
     const int button[4][5] = {
         SDLK_UP, SDLK_DOWN, SDLK_LEFT, SDLK_RIGHT, SDLK_RCTRL,
         SDLK_w, SDLK_s, SDLK_a, SDLK_d, SDLK_TAB,
@@ -21,70 +20,13 @@ namespace pazzers
     XY pacXY = {-1, -1};
     resources::Image* window = nullptr;
     resources::Image* field = nullptr;
-    SDL_Surface* number = NULL;
-    SDL_Surface* skyfall = NULL;
-    SDL_Surface* status_img = NULL;
-    SDL_Surface* pacman = NULL;
-    SDL_Surface* life_img = NULL;
-    SDL_Surface* text = NULL;
-    SDL_Rect numbs[11][2];
+    resources::Image* number = nullptr;
+    resources::Image* skyfall = nullptr;
+    resources::Image* status_img = nullptr;
+    resources::Image* pacman = nullptr;
+    resources::Image* life_img = nullptr;
+    resources::ImageView* numbs[2][11];
+    resources::ImageView* skyfall_clip[5];
     TTF_Font* font1, * font2;
     SDL_Event event;
-    SDL_Color black = {0, 0, 0};
-
-    SDL_Surface* LoadImageSDL(const char* filename)
-    {
-        SDL_Surface* loadedImage = NULL;
-        SDL_Surface* optimizedImage = NULL;
-
-        loadedImage = IMG_Load(filename);
-        optimizedImage = SDL_DisplayFormat(loadedImage);
-        SDL_FreeSurface(loadedImage);
-        SDL_SetColorKey(optimizedImage, SDL_SRCCOLORKEY, SDL_MapRGB(optimizedImage->format, 0xFF, 0x00, 0xFF));
-        return optimizedImage;
-    }
-
-
-    void ApplySurfaceSDL(int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip) {
-        SDL_Rect offset;
-
-        offset.x = x;
-        offset.y = y - 40;
-        SDL_BlitSurface(source, clip, destination, &offset);
-    }
-
-
-    void show_num(int* x, int* y, const char* str, int t)
-    {
-        int i = 0;
-
-        t = 1250 - (SDL_GetTicks() - t);
-        if (t < 0) t = 0;
-        else if (t > 1000) t = 1000;
-        SDL_SetAlpha(number, SDL_SRCALPHA, t / 4);
-        if (str[i] == '-')
-        {
-            ApplySurfaceSDL(*x + (i * 10), *y, number, window->surface, &numbs[10][1]);
-            i++;
-            while (str[i])
-            {
-                ApplySurfaceSDL(*x + (i * 10), *y, number, window->surface, &numbs[str[i] - '0'][1]);
-                i++;
-            }
-        }
-        else
-        {
-            if (str[i] == '+')
-            {
-                ApplySurfaceSDL(*x + (i * 10), *y, number, window->surface, &numbs[10][0]);
-                i++;
-            }
-            while (str[i])
-            {
-                ApplySurfaceSDL(*x + (i * 10), *y, number, window->surface, &numbs[str[i] - '0'][0]);
-                i++;
-            }
-        }
-        *y = *y - 1;
-    }
 }

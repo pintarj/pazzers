@@ -8,16 +8,16 @@ namespace pazzers
         for (auto descriptor : pazzer_descriptors)
             players.emplace_back(new Pazzer(*descriptor));
 
-        terrain = new Terrain();
-
-        status_img = LoadImageSDL("res/arena/status.bmp");
-        life_img = LoadImageSDL("res/arena/life.bmp");
-        number = LoadImageSDL("res/arena/number.bmp");
+        status_img = new resources::Image("res/arena/status.bmp");
+        life_img = new resources::Image("res/arena/life.bmp");
+        number = new resources::Image("res/arena/number.bmp");
         field = new resources::Image("res/arena/Field.bmp");
-        pacman = LoadImageSDL("res/arena/pac.bmp");
-        skyfall = LoadImageSDL("res/arena/skyfall.bmp");
+        pacman = new resources::Image("res/arena/pac.bmp");
+        skyfall = new resources::Image("res/arena/skyfall.bmp");
         font1 = TTF_OpenFont("res/arena/Ubuntu-R.ttf", 16);
         font2 = TTF_OpenFont("res/arena/Ubuntu-R.ttf", 14);
+
+        terrain = new Terrain();
     }
 
     Game::~Game()
@@ -27,13 +27,13 @@ namespace pazzers
         for (auto player : players)
             delete player;
 
+        delete skyfall;
+        delete pacman;
         delete field;
+        delete number;
+        delete life_img;
+        delete status_img;
 
-        SDL_FreeSurface(status_img);
-        SDL_FreeSurface(life_img);
-        SDL_FreeSurface(pacman);
-        SDL_FreeSurface(number);
-        SDL_FreeSurface(skyfall);
         TTF_CloseFont(font1);
         TTF_CloseFont(font2);
     }

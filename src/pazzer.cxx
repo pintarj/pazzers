@@ -6,6 +6,40 @@ namespace pazzers
     static std::vector<const PazzerDescriptor*> descriptors;
     static int last_id = 0;
 
+    static void show_num(int x, int y, const char* str)
+    {
+        int start = 0;
+        int color;
+
+        if (str[0] == '-')
+        {
+            color = 1;
+            window->apply(*numbs[1][10], x, y);
+            start = 1;
+        }
+        else
+        {
+            color = 0;
+
+            if (str[0] == '+')
+            {
+                window->apply(*numbs[0][10], x, y);
+                start = 1;
+            }
+        }
+
+        for (int i = start; str[i] != '\0'; ++i)
+            window->apply(*numbs[color][str[i] - '0'], x + (i * 10), y);
+    }
+
+    static void ApplySurfaceSDL(int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip) {
+        SDL_Rect offset;
+
+        offset.x = x;
+        offset.y = y - 40;
+        SDL_BlitSurface(source, clip, destination, &offset);
+    }
+
     PazzerDescriptor::PazzerDescriptor(const std::string& name, const std::string& image_path):
         name(name),
         image_path(image_path)
@@ -94,41 +128,44 @@ namespace pazzers
 
     void Pazzer::status()
     {
+        const SDL_Color black = {0, 0, 0};
         char str[10];
 
-        ApplySurfaceSDL(17, 50 + id * 190, status_img, window->surface, NULL);
+        window->apply(*status_img, 17, 10 + id * 190);
         window->apply(*clip[dead == -2 ? 5 : 0][0], 67, 30 + id * 190);
-        life_clip.w = life;
-        ApplySurfaceSDL(54, 130 + id * 190, life_img, window->surface, &life_clip);
+        resources::ImageView life_clip(*life_img, 2, 0, life, 19);
+        window->apply(life_clip, 54, 90 + id * 190);
+
+        SDL_Surface* text = nullptr;
 
         sprintf(str, "%d", life);
         text = TTF_RenderText_Solid(font1, (const char*) str, black);
-        ApplySurfaceSDL(27, id * 190 + 130, text, window->surface, NULL);
+        ApplySurfaceSDL(27, id * 190 + 130, text, window->surface, nullptr);
         SDL_FreeSurface(text);
 
         sprintf(str, "%d", atk);
         text = TTF_RenderText_Solid(font1, (const char*) str, black);
-        ApplySurfaceSDL(atk > 9 ? 106 : 109, id * 190 + 156, text, window->surface, NULL);
+        ApplySurfaceSDL(atk > 9 ? 106 : 109, id * 190 + 156, text, window->surface, nullptr);
         SDL_FreeSurface(text);
 
         sprintf(str, "%d", def);
         text = TTF_RenderText_Solid(font1, (const char*) str, black);
-        ApplySurfaceSDL(def > 9 ? 106 : 109, id * 190 + 183, text, window->surface, NULL);
+        ApplySurfaceSDL(def > 9 ? 106 : 109, id * 190 + 183, text, window->surface, nullptr);
         SDL_FreeSurface(text);
 
         sprintf(str, "%d", mun_max);
         text = TTF_RenderText_Solid(font2, (const char*) str, black);
-        ApplySurfaceSDL(mun_max > 9 ? 45 : 47, id * 190 + 153, text, window->surface, NULL);
+        ApplySurfaceSDL(mun_max > 9 ? 45 : 47, id * 190 + 153, text, window->surface, nullptr);
         SDL_FreeSurface(text);
 
         sprintf(str, "%d", power);
         text = TTF_RenderText_Solid(font2, (const char*) str, black);
-        ApplySurfaceSDL(power > 9 ? 45 : 47, id * 190 + 170, text, window->surface, NULL);
+        ApplySurfaceSDL(power > 9 ? 45 : 47, id * 190 + 170, text, window->surface, nullptr);
         SDL_FreeSurface(text);
 
         sprintf(str, "%d", speed);
         text = TTF_RenderText_Solid(font2, (const char*) str, black);
-        ApplySurfaceSDL(speed > 9 ? 45 : 47, id * 190 + 187, text, window->surface, NULL);
+        ApplySurfaceSDL(speed > 9 ? 45 : 47, id * 190 + 187, text, window->surface, nullptr);
         SDL_FreeSurface(text);
     }
 
@@ -250,8 +287,11 @@ namespace pazzers
 
         if (message.time != -1)
         {
-            show_num(&message.xy.x, &message.xy.y, message.text, message.time);
-            if (SDL_GetTicks() - message.time > 1000) message.time = -1;
+            show_num(message.xy.x, message.xy.y, message.text);
+            --message.xy.y;
+
+            if (SDL_GetTicks() - message.time > 1000)
+                message.time = -1;
         }
     }
 

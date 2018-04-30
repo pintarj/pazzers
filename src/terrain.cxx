@@ -1,37 +1,56 @@
 #include <pazzers/terrain.hxx>
+#include <SDL/SDL_image.h>
 
 namespace pazzers
 {
+    static SDL_Surface* LoadImageSDL(const char* filename)
+    {
+        SDL_Surface* loadedImage = NULL;
+        SDL_Surface* optimizedImage = NULL;
+
+        loadedImage = IMG_Load(filename);
+        optimizedImage = SDL_DisplayFormat(loadedImage);
+        SDL_FreeSurface(loadedImage);
+        SDL_SetColorKey(optimizedImage, SDL_SRCCOLORKEY, SDL_MapRGB(optimizedImage->format, 0xFF, 0x00, 0xFF));
+        return optimizedImage;
+    }
+
+    static void ApplySurfaceSDL(int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip) {
+        SDL_Rect offset;
+
+        offset.x = x;
+        offset.y = y - 40;
+        SDL_BlitSurface(source, clip, destination, &offset);
+    }
+
     Terrain::Terrain()
     {
-        Uint8 i, j;
-
         wall=LoadImageSDL("res/arena/wall.bmp");
         bomb=LoadImageSDL("res/arena/bomb.bmp");
         expl=LoadImageSDL("res/arena/expl.bmp");
         bonus=LoadImageSDL("res/arena/bonus.bmp");
-        for (i=0;i<7;i++) {
-            for (j=0;j<4;j++) {
+        for (int i=0;i<7;i++) {
+            for (int j=0;j<4;j++) {
                 expl_clip[i][j].x=i*40;
                 expl_clip[i][j].y=j*40;
                 expl_clip[i][j].w=40;
                 expl_clip[i][j].h=40;
             }
         }
-        for (i=0;i<4;i++) {
+        for (int i=0;i<4;i++) {
             bomb_clip[i].x=i*40;
             bomb_clip[i].y=0;
             bomb_clip[i].w=40;
             bomb_clip[i].h=40;
         }
-        for (i=0;i<3;i++) {
+        for (int i=0;i<3;i++) {
             wall_clip[i].x=i*40;
             wall_clip[i].y=0;
             wall_clip[i].w=40;
             wall_clip[i].h=40;
         }
-        for (i=0;i<7;i++) {
-            for (j=0;j<2;j++) {
+        for (int i=0;i<7;i++) {
+            for (int j=0;j<2;j++) {
                 bonus_clip[i][j].x=i*40;
                 bonus_clip[i][j].y=j*40;
                 bonus_clip[i][j].w=40;
@@ -39,22 +58,21 @@ namespace pazzers
             }
         }
 
-        for (i=0;i<19;i++) {
-            for (j=0;j<17;j++) {
+        for (int i=0;i<19;i++) {
+            for (int j=0;j<17;j++) {
                 if ((!(j%2==1 && i%2==1)) && (rand()%100<pro_block)){
                     area[i][j].type=WALL;
                 }
             }
         }
 
-        for (i=0;i<11;i++) {
-            for (j=0;j<2;j++) {
-                numbs[i][j].x=i*10;
-                numbs[i][j].y=j*20;
-                numbs[i][j].w=10;
-                numbs[i][j].h=20;
-            }
-        }
+        for (int i = 0; i < 2; ++i)
+            for (int j = 0; j < 11; ++j)
+                numbs[i][j] = new resources::ImageView(*number, j * 10, i * 20, 10, 20);
+
+        for (int i = 0; i < 5; ++i)
+            skyfall_clip[i] = new resources::ImageView(*skyfall, i * 40, 0, 40, 40);
+
         area[0][0].type=FREE;
         area[0][1].type=FREE;
         area[1][0].type=FREE;
@@ -75,6 +93,13 @@ namespace pazzers
         SDL_FreeSurface(expl);
         SDL_FreeSurface(wall);
         SDL_FreeSurface(bonus);
+
+        for (int y = 0; y < 2; y++)
+            for (int x = 0; x < 11; x++)
+                delete numbs[y][x];
+
+        for (int i = 0; i < 5; ++i)
+            delete skyfall_clip[i];
     }
 
     int Terrain::which_one(int phase) {
@@ -272,8 +297,8 @@ namespace pazzers
                         area[i][j].time-=2000;
                         area[i][j].type=BOMB;
                     } else {
-                        ApplySurfaceSDL(FX1+i*40, FY1+j*40, skyfall, window->surface, &bonus_clip[(SDL_GetTicks()-area[i][j].time)/500][0] );
-                        ApplySurfaceSDL(FX1+i*40, FY1+j*40-(2000-(SDL_GetTicks()-area[i][j].time)), skyfall, window->surface, &bonus_clip[4][0] );
+                        window->apply(*skyfall_clip[(SDL_GetTicks()-area[i][j].time)/500], FX1 + i * 40, FY1 + j * 40 - 40);
+                        window->apply(*skyfall_clip[4], FX1 + i * 40, FY1 + j * 40 - (2000 - (SDL_GetTicks() - area[i][j].time)) - 40);
                     }
                 }
             }
