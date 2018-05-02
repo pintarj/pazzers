@@ -249,7 +249,13 @@ namespace pazzers
                 if (area[i][j].type==BOMB) {
                     if (SDL_GetTicks()-area[i][j].time>=4000) {
                         area[i][j].type=EXPL;
-                        if (area[i][j].atk>0) ptr[area[i][j].owner]->mun++;
+                        if (area[i][j].atk>0)
+                        {
+                            Pazzer** p = ptr;
+                            while ((**p).id != area[i][j].owner)
+                                ++p;
+                            ++(**p).mun;
+                        }
                         while ( chain(i, j, area[i][j].power) );
                         ApplySurfaceSDL(FX1+i*40, FY1+j*40, expl, window->surface, &expl_clip[area[i][j].img][which_one(SDL_GetTicks()-area[i][j].time-4000)]);
                     } else {
