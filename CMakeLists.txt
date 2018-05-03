@@ -10,6 +10,7 @@ ADD_EXECUTABLE(pazzers
     src/pazzers.cxx
     src/terrain.cxx
     src/flow/key-listener.cxx
+    src/game/cell.cxx
     src/game/key-controller.cxx
     src/game/virtual-controller.cxx
     src/geometry/rectangle.cxx
