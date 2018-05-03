@@ -61,7 +61,7 @@ namespace pazzers
         for (int i=0;i<19;i++) {
             for (int j=0;j<17;j++) {
                 if ((!(j%2==1 && i%2==1)) && (rand()%100<pro_block)){
-                    area[i][j].type=WALL;
+                    area[i][j].type=_WALL;
                 }
             }
         }
@@ -73,18 +73,18 @@ namespace pazzers
         for (int i = 0; i < 5; ++i)
             skyfall_clip[i] = new geometry::Rectangle(i * 40, 0, 40, 40);
 
-        area[0][0].type=FREE;
-        area[0][1].type=FREE;
-        area[1][0].type=FREE;
-        area[0][15].type=FREE;
-        area[1][16].type=FREE;
-        area[0][16].type=FREE;
-        area[18][0].type=FREE;
-        area[18][1].type=FREE;
-        area[17][0].type=FREE;
-        area[18][15].type=FREE;
-        area[18][16].type=FREE;
-        area[17][16].type=FREE;
+        area[0][0].type=_FREE;
+        area[0][1].type=_FREE;
+        area[1][0].type=_FREE;
+        area[0][15].type=_FREE;
+        area[1][16].type=_FREE;
+        area[0][16].type=_FREE;
+        area[18][0].type=_FREE;
+        area[18][1].type=_FREE;
+        area[17][0].type=_FREE;
+        area[18][15].type=_FREE;
+        area[18][16].type=_FREE;
+        area[17][16].type=_FREE;
     }
 
     Terrain::~Terrain()
@@ -141,7 +141,7 @@ namespace pazzers
                             area[x][j].time=SDL_GetTicks()-4000;
                             result=1;
                             _pwr=0;
-                        } else if (area[x][j].type==FREE) {
+                        } else if (area[x][j].type==_FREE) {
                             area[x][j].type=EXPL;
                             area[x][j].time=area[x][y].time;
                             area[x][j].atk=area[x][y].atk;
@@ -151,7 +151,7 @@ namespace pazzers
                                 area[x][j].img=3;
                         } else if ((area[x][j].type==EXPL) && (area[x][j].img==5 && _pwr>0)) {
                             area[x][j].img=3;
-                        } else if (area[x][j].type==WALL ) {
+                        } else if (area[x][j].type==_WALL ) {
                             area[x][j].type=DESTROY;
                             area[x][j].time=SDL_GetTicks();
                             _pwr=0;
@@ -166,7 +166,7 @@ namespace pazzers
                             area[j][y].time=SDL_GetTicks()-4000;
                             result=1;
                             _pwr=0;
-                        } else if (area[j][y].type==FREE) {
+                        } else if (area[j][y].type==_FREE) {
                             area[j][y].type=EXPL;
                             area[j][y].time=area[x][y].time;
                             area[j][y].atk=area[x][y].atk;
@@ -176,7 +176,7 @@ namespace pazzers
                                 area[j][y].img=1;
                         } else if ((area[j][y].type==EXPL) && (area[j][y].img==2 && _pwr>0)) {
                             area[j][y].img=1;
-                        } else if (area[j][y].type==WALL ) {
+                        } else if (area[j][y].type==_WALL ) {
                             area[j][y].type=DESTROY;
                             area[j][y].time=SDL_GetTicks();
                             _pwr=0;
@@ -191,7 +191,7 @@ namespace pazzers
                             area[x][j].time=SDL_GetTicks()-4000;
                             result=1;
                             _pwr=0;
-                        } else if (area[x][j].type==FREE) {
+                        } else if (area[x][j].type==_FREE) {
                             area[x][j].type=EXPL;
                             area[x][j].time=area[x][y].time;
                             area[x][j].atk=area[x][y].atk;
@@ -201,7 +201,7 @@ namespace pazzers
                                 area[x][j].img=3;
                         } else if ((area[x][j].type==EXPL) && (area[x][j].img==4 && _pwr>0)) {
                             area[x][j].img=3;
-                        } else if (area[x][j].type==WALL ) {
+                        } else if (area[x][j].type==_WALL ) {
                             area[x][j].type=DESTROY;
                             area[x][j].time=SDL_GetTicks();
                             _pwr=0;
@@ -216,7 +216,7 @@ namespace pazzers
                             area[j][y].time=SDL_GetTicks()-4000;
                             result=1;
                             _pwr=0;
-                        } else if (area[j][y].type==FREE) {
+                        } else if (area[j][y].type==_FREE) {
                             area[j][y].type=EXPL;
                             area[j][y].time=area[x][y].time;
                             area[j][y].atk=area[x][y].atk;
@@ -226,7 +226,7 @@ namespace pazzers
                                 area[j][y].img=1;
                         } else if ((area[j][y].type==EXPL) && (area[j][y].img==6 && _pwr>0)) {
                             area[j][y].img=1;
-                        } else if (area[j][y].type==WALL ) {
+                        } else if (area[j][y].type==_WALL ) {
                             area[j][y].type=DESTROY;
                             area[j][y].time=SDL_GetTicks();
                             _pwr=0;
@@ -263,11 +263,11 @@ namespace pazzers
                     }
                 } else if (area[i][j].type==EXPL) {
                     if (SDL_GetTicks()-area[i][j].time>=4420) {
-                        area[i][j].type=FREE;
+                        area[i][j].type=_FREE;
                     } else {
                         ApplySurfaceSDL(FX1+i*40, FY1+j*40, expl, window->surface, &expl_clip[area[i][j].img][which_one(SDL_GetTicks()-area[i][j].time-4000)]);
                     }
-                } else if (area[i][j].type==WALL) {
+                } else if (area[i][j].type==_WALL) {
                     ApplySurfaceSDL(FX1+i*40, FY1+j*40, wall, window->surface, &wall_clip[0]);
                 } else if (area[i][j].type==DESTROY) {
                     if (SDL_GetTicks()-area[i][j].time>=350) {
@@ -280,7 +280,7 @@ namespace pazzers
                         else if (bns>30 && bns<34) area[i][j].type=BS_DEF;
                         else if (bns>33 && bns<35) area[i][j].type=BS_SKY;
                         else
-                            area[i][j].type=FREE;
+                            area[i][j].type=_FREE;
                     } else {
                         ApplySurfaceSDL(FX1+i*40, FY1+j*40, wall, window->surface, &wall_clip[which_one3(SDL_GetTicks()-area[i][j].time)]);
                     }

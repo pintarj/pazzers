@@ -350,7 +350,7 @@ namespace pazzers
                     if (xy[1].x - my_x < -5) xy[0].x += -4;
                     if (my_x + 39 - xy[2].x < -5) xy[0].x += 4;
                 }
-                if (((area[xy[3].x][xy[3].y - 1].type == WALL) || (area[xy[3].x][xy[3].y - 1].type == BOMB)) &&
+                if (((area[xy[3].x][xy[3].y - 1].type == _WALL) || (area[xy[3].x][xy[3].y - 1].type == BOMB)) &&
                     (xy[2].y < (FY1 + 40 * (xy[3].y + 1))))
                 {
                     xy[0].y -= -speed;
@@ -368,7 +368,7 @@ namespace pazzers
                     if (xy[1].x - my_x < -5) xy[0].x += -4;
                     if (my_x + 39 - xy[2].x < -5) xy[0].x += 4;
                 }
-                if (((area[xy[3].x][xy[3].y + 1].type == WALL) || (area[xy[3].x][xy[3].y + 1].type == BOMB)) &&
+                if (((area[xy[3].x][xy[3].y + 1].type == _WALL) || (area[xy[3].x][xy[3].y + 1].type == BOMB)) &&
                     (xy[2].y > (FY1 + 40 * (xy[3].y + 1))))
                 {
                     xy[0].y -= speed;
@@ -387,7 +387,7 @@ namespace pazzers
                     if (my_y + 39 - xy[2].y < -5) xy[0].y += 4;
                 }
                 if (xy[3].x != 18)
-                    if (((area[xy[3].x + 1][xy[3].y].type == WALL) || (area[xy[3].x + 1][xy[3].y].type == BOMB)) &&
+                    if (((area[xy[3].x + 1][xy[3].y].type == _WALL) || (area[xy[3].x + 1][xy[3].y].type == BOMB)) &&
                         (xy[2].x > (FX1 + 40 * (xy[3].x + 1))))
                     {
                         xy[0].x -= speed;
@@ -405,7 +405,7 @@ namespace pazzers
                     if (xy[1].y - my_y < -5) xy[0].y += -4;
                     if (my_y + 39 - xy[2].y < -5) xy[0].y += 4;
                 }
-                if (((area[xy[3].x - 1][xy[3].y].type == WALL) || (area[xy[3].x - 1][xy[3].y].type == BOMB)) &&
+                if (((area[xy[3].x - 1][xy[3].y].type == _WALL) || (area[xy[3].x - 1][xy[3].y].type == BOMB)) &&
                     (xy[2].x < (FX1 + 40 * (xy[3].x + 1))))
                 {
                     xy[0].x -= -speed;
@@ -464,7 +464,7 @@ namespace pazzers
             life = 0;
         else if (area[xy[3].x][xy[3].y].type == BS_BOMB)
         {
-            area[xy[3].x][xy[3].y].type = FREE;
+            area[xy[3].x][xy[3].y].type = _FREE;
             mun++;
             mun_max++;
             message.time = SDL_GetTicks();
@@ -474,7 +474,7 @@ namespace pazzers
         }
         else if (area[xy[3].x][xy[3].y].type == BS_FIRE)
         {
-            area[xy[3].x][xy[3].y].type = FREE;
+            area[xy[3].x][xy[3].y].type = _FREE;
             power++;
             message.time = SDL_GetTicks();
             sprintf(message.text, "%d", power);
@@ -483,7 +483,7 @@ namespace pazzers
         }
         else if (area[xy[3].x][xy[3].y].type == BS_PAC)
         {
-            area[xy[3].x][xy[3].y].type = FREE;
+            area[xy[3].x][xy[3].y].type = _FREE;
             time = SDL_GetTicks();
             if (!pac)
             {
@@ -493,7 +493,7 @@ namespace pazzers
         }
         else if (area[xy[3].x][xy[3].y].type == BS_ROLL)
         {
-            area[xy[3].x][xy[3].y].type = FREE;
+            area[xy[3].x][xy[3].y].type = _FREE;
             if (speed < 9) speed++;
             message.time = SDL_GetTicks();
             sprintf(message.text, "%d", speed);
@@ -502,7 +502,7 @@ namespace pazzers
         }
         else if (area[xy[3].x][xy[3].y].type == BS_ATK)
         {
-            area[xy[3].x][xy[3].y].type = FREE;
+            area[xy[3].x][xy[3].y].type = _FREE;
             atk += 9;
             message.time = SDL_GetTicks();
             sprintf(message.text, "%d", atk);
@@ -511,7 +511,7 @@ namespace pazzers
         }
         else if (area[xy[3].x][xy[3].y].type == BS_DEF)
         {
-            area[xy[3].x][xy[3].y].type = FREE;
+            area[xy[3].x][xy[3].y].type = _FREE;
             def += 4;
             message.time = SDL_GetTicks();
             sprintf(message.text, "%d", def);
@@ -520,12 +520,12 @@ namespace pazzers
         }
         else if (area[xy[3].x][xy[3].y].type == BS_SKY)
         {
-            area[xy[3].x][xy[3].y].type = FREE;
+            area[xy[3].x][xy[3].y].type = _FREE;
             for (i = 0; i < 19; i++)
             {
                 for (j = 0; j < 17; j++)
                 {
-                    if ((!(j % 2 == 1 && i % 2 == 1)) && (rand() % 100 < 7) && area[i][j].type == FREE)
+                    if ((!(j % 2 == 1 && i % 2 == 1)) && (rand() % 100 < 7) && area[i][j].type == _FREE)
                     {
                         area[i][j].type = SKY;
                         area[i][j].time = SDL_GetTicks();

@@ -5,20 +5,6 @@
 #include <SDL/SDL.h>
 #include <pazzers/pazzer.hxx>
 
-#define FREE 0
-#define BOMB 1
-#define EXPL 2
-#define WALL 3
-#define DESTROY 4
-#define BS_BOMB 5
-#define BS_FIRE 6
-#define BS_ROLL 7
-#define BS_PAC 8
-#define BS_ATK 9
-#define BS_DEF 10
-#define BS_SKY 11
-#define SKY 12
-
 namespace pazzers
 {
     /**
