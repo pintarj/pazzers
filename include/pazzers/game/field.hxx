@@ -12,6 +12,7 @@ namespace pazzers
 
 #include <pazzers/game/cell.hxx>
 #include <pazzers/geometry/xy.hxx>
+#include <pazzers/resources/image.hxx>
 
 namespace pazzers
 {
@@ -56,6 +57,12 @@ namespace pazzers
              */
             Cell* get_cell(const XY& position);
 
+            /**
+             * \brief Draw the field.
+             * \param position Where to draw the field on the screen.
+             * */
+            void draw(XY position);
+
         private:
             /**
              * \brief The array that contains all the field's cells.
@@ -68,6 +75,11 @@ namespace pazzers
              * \brief The two-dimensional array that contains all the field's cells.
              * */
             Cell*** const cells;
+
+            /**
+             * \brief The image containing the whole field.
+             * */
+            resources::Image* image;
         };
     }
 }

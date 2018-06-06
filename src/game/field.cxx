@@ -1,15 +1,17 @@
 #include <pazzers/game/field.hxx>
+#include <pazzers/garbage.hxx>
 
 namespace pazzers
 {
     namespace game
     {
         Field::Field():
-            width(11),
-            height(11),
+            width(21),
+            height(17),
             total_cells(width * height),
             all_cells(new Cell*[total_cells]),
-            cells(new Cell**[height])
+            cells(new Cell**[height]),
+            image(new resources::Image(width * PAZZERS_GAME_CELL_SIZE, height * PAZZERS_GAME_CELL_SIZE))
         {
             for (int y = 0; y < height; ++y)
                 cells[y] = &all_cells[y * width];
@@ -39,6 +41,8 @@ namespace pazzers
                     cell->set_neighbour(geometry::Direction::RIGHT, get_cell({x + 1, y}));
                     cell->set_neighbour(geometry::Direction::DOWN,  get_cell({x, y + 1}));
                     cell->set_neighbour(geometry::Direction::LEFT,  get_cell({x - 1, y}));
+
+                    image->apply(cell->image, x * PAZZERS_GAME_CELL_SIZE, y * PAZZERS_GAME_CELL_SIZE);
                 }
             }
         }
@@ -50,6 +54,7 @@ namespace pazzers
 
             delete[] all_cells;
             delete[] cells;
+            delete image;
         }
 
         Cell* Field::get_cell(const XY& position)
@@ -61,6 +66,11 @@ namespace pazzers
                 return nullptr;
 
             return cells[position.y][position.x];
+        }
+
+        void Field::draw(XY position)
+        {
+            window->apply(*image, position.x, position.y);
         }
     }
 }
