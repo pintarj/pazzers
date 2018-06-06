@@ -1,4 +1,5 @@
 #include <pazzers/game/cell.hxx>
+#include <pazzers/resources/cache.hxx>
 
 namespace pazzers
 {
@@ -6,7 +7,15 @@ namespace pazzers
     {
         Cell::Cell(Type type, XY position):
             type(type),
-            position(position)
+            position(position),
+            image(resources::cache::get_image([type] () -> std::string
+                {
+                    switch (type)
+                    {
+                        case Type::FREE: return "res/image/field/free.bmp";
+                        case Type::WALL: return "res/image/field/wall.bmp";
+                    }
+                } ()))
         {
             for (auto& neighbour : neighbours)
                 neighbour = nullptr;

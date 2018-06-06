@@ -13,6 +13,9 @@ namespace pazzers
 #include <pazzers/game/field.hxx>
 #include <pazzers/geometry/direction.hxx>
 #include <pazzers/geometry/xy.hxx>
+#include <pazzers/resources/image.hxx>
+
+#define PAZZERS_GAME_CELL_SIZE (40)
 
 namespace pazzers
 {
@@ -44,6 +47,11 @@ namespace pazzers
              * \brief The position of the cell.
              * */
             const XY position;
+
+            /**
+             * \brief The image reference that represent the cell.
+             * */
+            const resources::Image& image;
 
             /**
              * \brief Get a cell's neighbour given the direction.
