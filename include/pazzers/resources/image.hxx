@@ -30,6 +30,15 @@ namespace pazzers
             SDL_Surface* const surface;
 
             /**
+             * \brief Create an image of the specified size.
+             * \param width The width of the image.
+             * \param height The height of the image.
+             *
+             * The image content is undefined.
+             * */
+            Image(int width, int height);
+
+            /**
              * \brief Create a new Image associating it with a specified SDL_surface.
              * \param surface The SDL_surface to associate with.
              * */

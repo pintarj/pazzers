@@ -5,6 +5,35 @@ namespace pazzers
 {
     namespace resources
     {
+        Image::Image(int width, int height):
+            Image([width, height] () -> SDL_Surface*
+                {
+                    Uint32 r_mask, g_mask, b_mask, a_mask;
+
+                    #if SDL_BYTEORDER == SDL_BIG_ENDIAN
+                        r_mask = 0xff000000;
+                        g_mask = 0x00ff0000;
+                        b_mask = 0x0000ff00;
+                        a_mask = 0x000000ff;
+                    #else
+                        r_mask = 0x000000ff;
+                        g_mask = 0x0000ff00;
+                        b_mask = 0x00ff0000;
+                        a_mask = 0xff000000;
+                    #endif
+
+                    SDL_Surface* surface = SDL_CreateRGBSurface(
+                            SDL_SWSURFACE,
+                            width, height, 32,
+                            r_mask, g_mask, b_mask, a_mask
+                        );
+
+                    return surface;
+                } ())
+        {
+
+        }
+
         Image::Image(SDL_Surface* surface):
             surface(surface),
             full_view_rectangle(new geometry::Rectangle(0, 0, surface->w, surface->h))
