@@ -4,8 +4,9 @@
 
 #include <vector>
 #include <pazzers/pazzer.hxx>
-#include <pazzers/terrain.hxx>
 #include <pazzers/flow/key-listener.hxx>
+#include <pazzers/game/field.hxx>
+#include <pazzers/geometry/xy.hxx>
 
 namespace pazzers
 {
@@ -57,9 +58,9 @@ namespace pazzers
         std::vector<Pazzer*> players;
 
         /**
-         * \brief The terrain of the game.
+         * \brief The field of the game.
          * */
-        Terrain* terrain;
+        game::Field* field;
     };
 }
 

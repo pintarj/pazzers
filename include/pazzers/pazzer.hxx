@@ -10,7 +10,7 @@ namespace pazzers
 #include <string>
 #include <vector>
 #include <SDL/SDL.h>
-#include <pazzers/garbage.hxx>
+#include <pazzers/system.hxx>
 #include <pazzers/flow/key-listener.hxx>
 #include <pazzers/game/virtual-controller.hxx>
 #include <pazzers/geometry/xy.hxx>

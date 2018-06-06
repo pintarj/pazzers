@@ -1,5 +1,5 @@
 #include <pazzers/game/field.hxx>
-#include <pazzers/garbage.hxx>
+#include <pazzers/system.hxx>
 
 namespace pazzers
 {
@@ -70,7 +70,7 @@ namespace pazzers
 
         void Field::draw(XY position)
         {
-            window->apply(*image, position.x, position.y);
+            system::window->apply(*image, position.x, position.y);
         }
     }
 }

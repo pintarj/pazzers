@@ -5,10 +5,9 @@ INCLUDE_DIRECTORIES(include)
 
 ADD_EXECUTABLE(pazzers
     src/game.cxx
-    src/garbage.cxx
     src/pazzer.cxx
     src/pazzers.cxx
-    src/terrain.cxx
+    src/system.cxx
     src/flow/key-listener.cxx
     src/game/cell.cxx
     src/game/field.cxx

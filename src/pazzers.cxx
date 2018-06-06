@@ -1,49 +1,13 @@
-#include <utility>
-#include <SDL/SDL.h>
-#include <SDL/SDL_ttf.h>
 #include <pazzers/game.hxx>
 #include <pazzers/game/key-controller.hxx>
 #include <pazzers/resources/cache.hxx>
+#include <pazzers/system.hxx>
 
 using namespace pazzers;
 
-static bool initialize()
-{
-    if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
-    {
-        printf("error: could not initialize SDL");
-        return false;
-    }
-
-    if (TTF_Init() < 0)
-    {
-        printf("error: could not initialize TTF: %s\n", TTF_GetError());
-        return false;
-    }
-
-    window = new resources::Image(SDL_SetVideoMode(1200, 800, 32, SDL_HWSURFACE));
-
-    if (window == nullptr)
-    {
-        printf("error: could not create SDL window\n");
-        return false;
-    }
-
-    SDL_WM_SetCaption("Pazzers", nullptr);
-    srand(SDL_GetTicks());
-    return true;
-}
-
-static void destroy()
-{
-    delete window;
-    TTF_Quit();
-    SDL_Quit();
-}
-
 int main(int argc, char* argv[])
 {
-    if (!initialize())
+    if (!system::initialize())
         return 1;
 
     game::KeyController* controllers[4] =
@@ -119,7 +83,7 @@ int main(int argc, char* argv[])
             break;
 
         game->draw_frame();
-        SDL_Flip(window->surface);
+        SDL_Flip(system::window->surface);
 
         auto new_timestamp = SDL_GetTicks();
         auto length = new_timestamp - timestamp;
@@ -135,7 +99,7 @@ int main(int argc, char* argv[])
 
     delete game;
     resources::cache::free_all();
-    destroy();
+    system::destroy();
     return 0;
 }
   
