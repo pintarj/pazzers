@@ -25,6 +25,8 @@ namespace pazzers
             {
                 for (auto pair : images)
                     delete pair.second;
+
+                images.clear();
             }
         }
     }

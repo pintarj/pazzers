@@ -62,8 +62,8 @@ int main(int argc, char* argv[])
 
     auto game = new Game(std::move(players));
 
-    for (int i = 0; i < 4; ++i)
-        game->listeners.insert(controllers[i]);
+    for (auto& controller : controllers)
+        game->listeners.insert(controller);
 
     bool         quit       = false;
     const int    target_fps = 60;
@@ -130,8 +130,8 @@ int main(int argc, char* argv[])
         timestamp = new_timestamp;
     }
 
-    for (int i = 0; i < 4; ++i)
-        delete controllers[i];
+    for (auto& controller : controllers)
+        delete controller;
 
     delete game;
     resources::cache::free_all();
