@@ -92,6 +92,7 @@ int main(int argc, char* argv[])
             SDL_Delay(delta_ms - length);
 
         timestamp = new_timestamp;
+        delta = length / 1000.0f;
     }
 
     for (auto& controller : controllers)

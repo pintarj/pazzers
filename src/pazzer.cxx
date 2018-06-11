@@ -1,4 +1,5 @@
 #include <pazzers/pazzer.hxx>
+#include <pazzers/game/cell.hxx>
 #include <pazzers/resources/cache.hxx>
 
 namespace pazzers
@@ -76,64 +77,20 @@ namespace pazzers
         controller(controller),
         image(resources::cache::get_image(descriptor.image_path)),
         direction(geometry::Direction::DOWN),
-        in_movement(false)
+        in_movement(false),
+        field_x(0),
+        field_y(0),
+        clipping_accumulator(0),
+        life_points(100)
     {
-        mun = 2;
-        pac = 0;
-        mun_max = mun;
-        power = 4;
-        atk = 26;
-        def = 1;
-        life = 100;
-        count = 0;
-        time = SDL_GetTicks() - 4000;
-        xy[0].x = id * 100;
-        xy[0].y = id * 100;
-        message.time = -1;
-        dead = -1;
-        dmg = 0;
-        speed = 4;
+
     }
 
     Pazzer::~Pazzer() = default;
 
-    void Pazzer::status()
-    {
-
-    }
-
-    void Pazzer::make_fun(int phase)
-    {
-        phase -= dead;
-
-        if (phase < 1500)
-        {
-            system::window->apply(image, pazzer_views[4][(phase / 250) % 2], xy[0].x, xy[0].y - 40);
-        }
-        else if (phase < 1750)
-        {
-            system::window->apply(image, pazzer_views[4][2], xy[0].x, xy[0].y - 40);
-        }
-        else if (phase < 1900)
-        {
-            system::window->apply(image, pazzer_views[5][2], xy[0].x, xy[0].y - 40);
-        }
-        else if (xy[0].y > -50)
-        {
-            system::window->apply(image, pazzer_views[5][(phase / 100) % 2], xy[0].x, xy[0].y - 40);
-
-            xy[0].y -= count / 2;
-
-            if (phase > 2000)
-                count += 1;
-        }
-        else
-            dead = -2;
-    }
-
     void Pazzer::update(float delta)
     {
-        if (dead != -1)
+        if (is_out_of_game())
             return;
 
         if (controller->is_bomb_drop_required())
@@ -144,34 +101,81 @@ namespace pazzers
         auto new_direction = controller->get_direction();
 
         if (new_direction == geometry::Direction::NONE)
+        {
             in_movement = false;
+            clipping_accumulator = 0;
+        }
         else
         {
             direction = new_direction;
             in_movement = true;
+            apply_movement(delta);
         }
     }
 
-    int Pazzer::alive(Uint8 i)
+    void Pazzer::draw(const XY& field_origin)
+    {
+        if (is_out_of_game())
+            return;
+
+        const int view_index = pazzer_view_index_from_direction(direction);
+        const auto& view = pazzer_views[view_index][get_clip_index()];
+        const XY draw_position = {field_origin.x + (int) field_x, field_origin.y + (int) field_y - 10};
+        system::window->apply(image, view, draw_position.x, draw_position.y);
+    }
+
+    bool Pazzer::is_out_of_game() const noexcept
+    {
+        return life_points <= 0;
+    }
+
+    void Pazzer::apply_movement(float delta)
+    {
+        auto distance = delta * (PAZZERS_GAME_CELL_SIZE * 3.0f);
+        clipping_accumulator += distance;
+
+        switch (direction)
+        {
+            case geometry::Direction::UP:
+                field_y -= distance;
+                break;
+
+            case geometry::Direction::RIGHT:
+                field_x += distance;
+                break;
+
+            case geometry::Direction::DOWN:
+                field_y += distance;
+                break;
+
+            case geometry::Direction::LEFT:
+                field_x -= distance;
+                break;
+        }
+    }
+
+    int Pazzer::get_clip_index()
     {
         if (!in_movement)
             return 0;
 
-        if (i < 4)
+        const int time_unit = (PAZZERS_GAME_CELL_SIZE * 1000) / 4200;
+        const int time_total = 6 * time_unit;
+
+        while (clipping_accumulator >= time_total)
+            clipping_accumulator -= time_total;
+
+        const auto accumulated = (int) clipping_accumulator;
+
+        if (accumulated < (1 * time_unit))
             return 0;
-        else if (i < 12)
+
+        if (accumulated < (3 * time_unit))
             return 1;
-        else if (i < 16)
+
+        if (accumulated < (4 * time_unit))
             return 0;
-        else
-            return 2;
-    }
 
-    void Pazzer::show()
-    {
-        const int view_index = pazzer_view_index_from_direction(direction);
-
-        system::window->apply(image, pazzer_views[view_index][alive(++count)], xy[0].x, xy[0].y - 40);
-        count %= 22;
+        return 2;
     }
 }

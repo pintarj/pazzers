@@ -35,7 +35,7 @@ namespace pazzers
 
         std::sort(players.begin(), players.end(), [] (Pazzer* left, Pazzer* right) -> bool
             {
-                return left->xy[1].y < right->xy[1].y;
+                return left->field_y < right->field_y;
             });
 
         return false;
@@ -53,6 +53,6 @@ namespace pazzers
         field->draw(field_origin);
 
         for (auto& player : players)
-            player->show();
+            player->draw(field_origin);
     }
 }

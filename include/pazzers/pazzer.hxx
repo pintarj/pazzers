@@ -4,6 +4,7 @@
 
 namespace pazzers
 {
+    class Game;
     class Pazzer;
 }
 
@@ -53,6 +54,8 @@ namespace pazzers
      * */
     class Pazzer
     {
+        friend Game;
+
     public:
         /**
          * \brief The unique id of the player in the game.
@@ -81,14 +84,17 @@ namespace pazzers
          * */
         void update(float delta);
 
-        XY xy[4];
-        int mun, life, dead, mun_max, atk, def, dmg;
-        void make_fun(int phase);
-        void status();
-        void show();
-        int alive(Uint8 i);
-        void move();
-        void check();
+        /**
+         * \brief Draw the pazzer taking in condition the field's origin.
+         * \param field_origin The field's origin.
+         * */
+        void draw(const XY& field_origin);
+
+        /**
+         * \brief Tells if the player is still in game or not.
+         * \return True if it's in game, false otherwise.
+         * */
+        bool is_out_of_game() const noexcept;
 
     private:
         /**
@@ -111,13 +117,38 @@ namespace pazzers
          * */
         bool in_movement;
 
-        Uint8 count;
-        int power, speed, time, pac;
-        struct _message {
-            XY xy;
-            int time;
-            char text[10];
-        } message;
+        /**
+         * \brief The pazzers current x position on the field.
+         * */
+        float field_x;
+
+        /**
+         * \brief The pazzers current y position on the field.
+         * */
+        float field_y;
+
+        /**
+         * \brief Stores the amount of distance covered since last clip change.
+         * */
+        float clipping_accumulator;
+
+        /**
+         * \brief The player's life points.
+         * */
+        int life_points;
+
+        /**
+         * \brief Applies the movement using the direction.
+         * \param delta The amount of time that is going to be updated, in seconds.
+         * */
+        void apply_movement(float delta);
+
+        /**
+         * \brief Return the index of the clip that have to be used for the current step
+         *     of the movement.
+         * \return The second index of the clip in the "pazzer_views[][]" array.
+         * */
+        int get_clip_index();
     };
 }
 
