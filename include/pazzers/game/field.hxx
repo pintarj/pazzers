@@ -60,6 +60,13 @@ namespace pazzers
             Cell* get_cell(const XY& position);
 
             /**
+             * \brief Return a vector containing "n" random spawnable positiions.
+             * \param n The number of random positions.
+             * \return A vector with spawn positions.
+             * */
+            std::vector<XY> get_spawn_positions(int n);
+
+            /**
              * \brief Draw the field.
              * \param position Where to draw the field on the screen.
              * */
@@ -79,9 +86,15 @@ namespace pazzers
             Cell*** const cells;
 
             /**
+             * \brief The vector that contains all the spawnable positions.
+             * */
+            std::vector<XY> spawnable_positions;
+
+            /**
              * \brief The image containing the whole field.
              * */
             resources::Image* image;
+
         };
     }
 }

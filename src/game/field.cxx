@@ -1,4 +1,6 @@
 #include <pazzers/game/field.hxx>
+#include <algorithm>
+#include <random>
 #include <pazzers/system.hxx>
 
 namespace pazzers
@@ -23,6 +25,9 @@ namespace pazzers
                     auto index = y * fieldDescriptor.width + x;
                     auto& descriptor = *fieldDescriptor.cells[index];
                     cells[y][x] = new Cell(descriptor, {x, y});
+
+                    if (descriptor.spawnable)
+                        spawnable_positions.emplace_back(XY{x, y});
                 }
             }
 
@@ -60,6 +65,18 @@ namespace pazzers
                 return nullptr;
 
             return cells[position.y][position.x];
+        }
+
+        std::vector<XY> Field::get_spawn_positions(int n)
+        {
+            if (n > spawnable_positions.size())
+                throw 0;
+
+            std::vector<XY> positions(spawnable_positions);
+            std::random_device random_device;
+            std::mt19937 generator(random_device());
+            std::shuffle(positions.begin(), positions.end(), generator);
+            return std::vector<XY>(positions.begin(), positions.begin() + n);
         }
 
         void Field::draw(XY position)
