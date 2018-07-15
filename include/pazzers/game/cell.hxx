@@ -13,6 +13,7 @@ namespace pazzers
 #include <pazzers/game/field.hxx>
 #include <pazzers/geometry/direction.hxx>
 #include <pazzers/geometry/xy.hxx>
+#include <pazzers/resources/cell-descriptor.hxx>
 #include <pazzers/resources/image.hxx>
 
 #define PAZZERS_GAME_CELL_SIZE (40)
@@ -30,18 +31,9 @@ namespace pazzers
 
         public:
             /**
-             * \brief Enumeration of cell types.
+             * \brief The cell's descriptor.
              * */
-            enum class Type
-            {
-                FREE,
-                WALL
-            };
-
-            /**
-             * \brief The cell type.
-             * */
-            const Type type;
+            const resources::CellDescriptor& descriptor;
 
             /**
              * \brief The position of the cell.
@@ -65,10 +57,10 @@ namespace pazzers
         protected:
             /**
              * \brief Create a new cell of specified type.
-             * \param type The type of the cell.
+             * \param descriptor The cell's descriptor.
              * \param position The position of the cell.
              * */
-            Cell(Type type, XY position);
+            Cell(const resources::CellDescriptor& descriptor, XY position);
 
             /**
              * \brief Default implementation.

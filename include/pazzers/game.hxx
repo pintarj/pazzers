@@ -7,6 +7,7 @@
 #include <pazzers/flow/key-listener.hxx>
 #include <pazzers/game/field.hxx>
 #include <pazzers/geometry/xy.hxx>
+#include <pazzers/resources/field-descriptor.hxx>
 
 namespace pazzers
 {
@@ -19,8 +20,9 @@ namespace pazzers
         /**
          * \brief Create a new game.
          * \param pazzers The vector of players.
+         * \param fieldDescriptor The field's descriptor.
          * */
-        Game(std::vector<Pazzer*>&& players);
+        Game(std::vector<Pazzer*>&& players, const resources::FieldDescriptor& fieldDescriptor);
 
         /**
          * \brief Release the used resources.

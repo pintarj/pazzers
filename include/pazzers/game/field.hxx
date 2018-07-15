@@ -12,6 +12,7 @@ namespace pazzers
 
 #include <pazzers/game/cell.hxx>
 #include <pazzers/geometry/xy.hxx>
+#include <pazzers/resources/field-descriptor.hxx>
 #include <pazzers/resources/image.hxx>
 
 namespace pazzers
@@ -40,9 +41,10 @@ namespace pazzers
             const int total_cells;
 
             /**
-             * \brief Create a new field.
+             * \brief Create a new field using the specified descriptor.
+             * \param fieldDescriptor The field's descriptor.
              * */
-            Field();
+            Field(const resources::FieldDescriptor& fieldDescriptor);
 
             /**
              * \brief Release the used resources.

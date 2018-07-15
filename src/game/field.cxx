@@ -5,9 +5,9 @@ namespace pazzers
 {
     namespace game
     {
-        Field::Field():
-            width(21),
-            height(17),
+        Field::Field(const resources::FieldDescriptor& fieldDescriptor):
+            width(fieldDescriptor.width),
+            height(fieldDescriptor.height),
             total_cells(width * height),
             all_cells(new Cell*[total_cells]),
             cells(new Cell**[height]),
@@ -20,15 +20,9 @@ namespace pazzers
             {
                 for (int x = 0; x < width; ++x)
                 {
-                    const bool is_wall =
-                        y == 0 ||
-                        y == height - 1 ||
-                        x == 0 ||
-                        x == width - 1 ||
-                        (x % 2 == 0 && y % 2 == 0);
-
-                    const Cell::Type type = (is_wall) ? Cell::Type::WALL : Cell::Type::FREE;
-                    cells[y][x] = new Cell(type, {x, y});
+                    auto index = y * fieldDescriptor.width + x;
+                    auto& descriptor = *fieldDescriptor.cells[index];
+                    cells[y][x] = new Cell(descriptor, {x, y});
                 }
             }
 

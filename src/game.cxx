@@ -3,9 +3,9 @@
 
 namespace pazzers
 {
-    Game::Game(std::vector<Pazzer*>&& players):
+    Game::Game(std::vector<Pazzer*>&& players, const resources::FieldDescriptor& fieldDescriptor):
         players(players),
-        field(new game::Field())
+        field(new game::Field(fieldDescriptor))
     {
 
     }

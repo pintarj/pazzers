@@ -24,7 +24,9 @@ int main(int argc, char* argv[])
     for (int i = 0; i < 4; ++i)
         players.emplace_back(new Pazzer(*descriptors.at((unsigned) i), controllers[i]));
 
-    auto game = new Game(std::move(players));
+    resources::CellDescriptor cd("res/image/field/free.bmp", true, true);
+    resources::FieldDescriptor fieldDescriptor(4, 4, std::vector<const resources::CellDescriptor*>(16, &cd));
+    auto game = new Game(std::move(players), fieldDescriptor);
 
     for (auto& controller : controllers)
         game->listeners.insert(controller);

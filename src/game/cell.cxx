@@ -5,17 +5,10 @@ namespace pazzers
 {
     namespace game
     {
-        Cell::Cell(Type type, XY position):
-            type(type),
+        Cell::Cell(const resources::CellDescriptor& descriptor, XY position):
+            descriptor(descriptor),
             position(position),
-            image(resources::cache::get_image([type] () -> std::string
-                {
-                    switch (type)
-                    {
-                        case Type::FREE: return "res/image/field/free.bmp";
-                        case Type::WALL: return "res/image/field/wall.bmp";
-                    }
-                } ()))
+            image(resources::cache::get_image(descriptor.image_path))
         {
             for (auto& neighbour : neighbours)
                 neighbour = nullptr;
