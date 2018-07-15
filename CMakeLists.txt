@@ -15,6 +15,7 @@ ADD_EXECUTABLE(pazzers
     src/game/virtual-controller.cxx
     src/geometry/rectangle.cxx
     src/resources/cache.cxx
+    src/resources/cell-descriptor.cxx
     src/resources/image.cxx
 )
 
