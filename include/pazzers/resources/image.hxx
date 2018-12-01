@@ -36,6 +36,13 @@ namespace pazzers
             Image(SDL_Surface* surface);
 
             /**
+             * \brief Create an uninitialized surface.
+             * \param width The width of the surface.
+             * \param height The height of the surface.
+             * */
+            Image(int width, int height);
+
+            /**
              * \brief Create a new Image using a specific image file referenced by a filename.
              * \param file_name The filename that reference the image file.
              * */

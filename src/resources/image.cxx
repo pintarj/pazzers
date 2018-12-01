@@ -1,5 +1,6 @@
 #include <pazzers/resources/image.hxx>
 #include <SDL/SDL_image.h>
+#include <pazzers/garbage.hxx>
 
 namespace pazzers
 {
@@ -10,6 +11,24 @@ namespace pazzers
             full_view_rectangle(new geometry::Rectangle(0, 0, surface->w, surface->h))
         {
             SDL_UnlockSurface(surface);
+        }
+
+        Image::Image(int width, int height):
+            Image([width, height] () -> SDL_Surface*
+                {
+                    auto   format = window->surface->format;
+                    Uint32 Rmask  = format->Rmask;
+                    Uint32 Gmask  = format->Gmask;
+                    Uint32 Bmask  = format->Bmask;
+                    Uint32 Amask  = format->Amask;
+
+                    return SDL_CreateRGBSurface(
+                            SDL_HWSURFACE | SDL_SRCCOLORKEY,
+                            width, height, format->BitsPerPixel,
+                            Rmask, Gmask, Bmask, Amask);
+                } ())
+        {
+
         }
 
         Image::Image(const std::string& file_name):
