@@ -12,7 +12,7 @@ namespace pazzers
 
         }
 
-        void WallCell::draw()
+        void WallCell::static_draw()
         {
             this->field->get_image().apply(this->wall_cell_image, 40 * position.x, 40 * position.y);
         }

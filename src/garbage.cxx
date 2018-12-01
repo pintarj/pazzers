@@ -13,7 +13,7 @@ namespace pazzers
     const int initxy[4][2] = {214, 69, 934, 710, 934, 69, 214, 710};
     XY pacXY = {-1, -1};
     resources::Image* window = nullptr;
-    resources::Image* field = nullptr;
+    resources::Image* _field = nullptr;
     resources::Image* number = nullptr;
     resources::Image* skyfall = nullptr;
     resources::Image* status_img = nullptr;

@@ -8,10 +8,11 @@ namespace pazzers
 {
     namespace game
     {
-        Field::Field():
+        Field::Field(XY origin, const std::vector<Pazzer*>& players):
             width(11),
             height(11),
             total_cells(width * height),
+            origin(origin),
             all_cells(new Cell*[total_cells]),
             cells(new Cell**[height]),
             image(new resources::Image(40 * width, 40 * height))
@@ -49,9 +50,23 @@ namespace pazzers
                 }
             }
 
+            for (int i = 0; i < players.size(); ++i)
+            {
+                static XY spawn_position_lookup [4] =
+                    {
+                        {1, 1},
+                        {9, 9},
+                        {9, 1},
+                        {1, 9}
+                    };
+
+                auto player = players[i];
+                player->current_cell = this->get_cell(spawn_position_lookup[i]);
+            }
+
             for (int i = 0; i < height; ++i)
                 for (int j = 0; j < width; ++j)
-                    this->get_cell({j, i})->draw();
+                    this->get_cell({j, i})->static_draw();
         }
 
         Field::~Field()
@@ -62,6 +77,15 @@ namespace pazzers
             delete[] all_cells;
             delete[] cells;
             delete this->image;
+        }
+
+        void Field::draw()
+        {
+            window->apply(*this->image, origin.x, origin.y);
+
+            for (int i = 0; i < height; ++i)
+                for (int j = 0; j < width; ++j)
+                    this->cells[i][j]->draw();
         }
 
         Cell* Field::get_cell(const XY& position)

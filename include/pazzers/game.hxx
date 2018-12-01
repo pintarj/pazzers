@@ -5,6 +5,7 @@
 #include <vector>
 #include <pazzers/pazzer.hxx>
 #include <pazzers/terrain.hxx>
+#include <pazzers/game/field.hxx>
 #include <pazzers/flow/key-listener.hxx>
 
 namespace pazzers
@@ -60,6 +61,11 @@ namespace pazzers
          * \brief The terrain of the game.
          * */
         Terrain* terrain;
+
+        /**
+         * \brief The filed of the game.
+         * */
+        game::Field* field;
     };
 }
 

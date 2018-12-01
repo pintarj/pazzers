@@ -25,7 +25,7 @@ namespace pazzers
             /**
              * \brief Draws the cell on the field.
              * */
-            void draw() override;
+            void static_draw() override;
 
             /**
              * \brief Default implementation.

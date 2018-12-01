@@ -45,7 +45,7 @@ namespace pazzers
     extern const int initxy[4][2];
     extern XY pacXY;
     extern resources::Image* window;
-    extern resources::Image* field;
+    extern resources::Image* _field;
     extern resources::Image* number;
     extern resources::Image* skyfall;
     extern resources::Image* status_img;

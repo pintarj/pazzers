@@ -108,6 +108,8 @@ namespace pazzers
         id(++last_id),
         descriptor(descriptor),
         controller(controller),
+        current_cell(nullptr),
+        cell_offset({20, 20}),
         image(resources::cache::get_image(descriptor.image_path)),
         direction(geometry::Direction::DOWN),
         in_movement(false)
@@ -233,6 +235,20 @@ namespace pazzers
         }
     }
 
+    void Pazzer::draw()
+    {
+        const int view_index = pazzer_view_index_from_direction(direction);
+
+        const XY position = {
+            this->current_cell->origin.x + this->cell_offset.x - 20,
+            this->current_cell->origin.y + this->cell_offset.y - 30
+        };
+
+        window->apply(image, pazzer_views[view_index][alive(++count)], position.x, position.y);
+
+        count %= 22;
+    }
+
     int Pazzer::alive(Uint8 i)
     {
         if (!in_movement)
@@ -247,31 +263,6 @@ namespace pazzers
         else
             return 2;
     }
-
-
-    void Pazzer::show()
-    {
-        const int view_index = pazzer_view_index_from_direction(direction);
-
-        if (pac)
-            // should draw pacman
-            window->apply(image, pazzer_views[view_index][alive(++count)], xy[0].x, xy[0].y - 40);
-        else
-            // should blink with negative
-            window->apply(image, pazzer_views[view_index][alive(++count)], xy[0].x, xy[0].y - 40);
-
-        count %= 22;
-
-        if (message.time != -1)
-        {
-            show_num(message.xy.x, message.xy.y, message.text);
-            --message.xy.y;
-
-            if (SDL_GetTicks() - message.time > 1000)
-                message.time = -1;
-        }
-    }
-
 
     void Pazzer::move()
     {

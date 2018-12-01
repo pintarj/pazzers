@@ -12,7 +12,7 @@ namespace pazzers
 
         }
 
-        void GrassCell::draw()
+        void GrassCell::static_draw()
         {
             this->field->get_image().apply(this->grass_cell_image, 40 * position.x, 40 * position.y);
         }

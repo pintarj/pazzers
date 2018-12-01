@@ -12,6 +12,8 @@ namespace pazzers
 #include <SDL/SDL.h>
 #include <pazzers/garbage.hxx>
 #include <pazzers/flow/key-listener.hxx>
+#include <pazzers/game/cell.hxx>
+#include <pazzers/game/field.hxx>
 #include <pazzers/game/virtual-controller.hxx>
 #include <pazzers/geometry/xy.hxx>
 #include <pazzers/resources/image.hxx>
@@ -53,6 +55,8 @@ namespace pazzers
      * */
     class Pazzer
     {
+        friend game::Field;
+
     public:
         /**
          * \brief The unique id of the player in the game.
@@ -81,6 +85,11 @@ namespace pazzers
          * */
         void update(float delta);
 
+        /**
+         * \brief Draws the pazzer.
+         * */
+        void draw();
+
         XY xy[4];
         int mun, life, dead, mun_max, atk, def, dmg;
         void make_fun(int phase);
@@ -91,6 +100,16 @@ namespace pazzers
         void check();
 
     private:
+        /**
+         * \brief The cell on which the pazzers stays on.
+         * */
+        game::Cell* current_cell;
+
+        /**
+         * \brief The offset of the player inside the cell.
+         * */
+        XY cell_offset;
+
         /**
          * \brief The image that represent the pazzer.
          * */

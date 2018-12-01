@@ -10,9 +10,11 @@ namespace pazzers
     }
 }
 
+#include <pazzers/pazzer.hxx>
 #include <pazzers/game/cell.hxx>
 #include <pazzers/geometry/xy.hxx>
 #include <pazzers/resources/image.hxx>
+#include <vector>
 
 namespace pazzers
 {
@@ -23,6 +25,8 @@ namespace pazzers
          * */
         class Field
         {
+            friend Cell;
+
         public:
             /**
              * \brief The width of the field.
@@ -40,9 +44,11 @@ namespace pazzers
             const int total_cells;
 
             /**
-             * \brief Create a new field.
+             * \brief Create a new field, with the specified players.
+             * \param origin The origin position of the field on the screen.
+             * \param players The specified players.
              * */
-            Field();
+            Field(XY origin, const std::vector<Pazzer*>& players);
 
             /**
              * \brief Release the used resources.
@@ -62,7 +68,17 @@ namespace pazzers
              * */
             resources::Image& get_image();
 
+            /**
+             * \brief Draws The field.
+             * */
+            void draw();
+
         private:
+            /**
+             * \brief The origin position of the field on the screen.
+             */
+            XY origin;
+
             /**
              * \brief The array that contains all the field's cells.
              *

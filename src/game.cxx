@@ -4,22 +4,24 @@
 namespace pazzers
 {
     Game::Game(std::vector<Pazzer*>&& players):
-        players(players)
+        players(std::move(players))
     {
         status_img = new resources::Image("res/arena/status.bmp");
         life_img = new resources::Image("res/arena/life.bmp");
         number = new resources::Image("res/arena/number.bmp");
-        field = new resources::Image("res/arena/Field.bmp");
+        _field = new resources::Image("res/arena/Field.bmp");
         pacman = new resources::Image("res/arena/pac.bmp");
         skyfall = new resources::Image("res/arena/skyfall.bmp");
         font1 = TTF_OpenFont("res/arena/Ubuntu-R.ttf", 16);
         font2 = TTF_OpenFont("res/arena/Ubuntu-R.ttf", 14);
 
         terrain = new Terrain();
+        field = new game::Field({100, 100}, this->players);
     }
 
     Game::~Game()
     {
+        delete field;
         delete terrain;
 
         for (auto player : players)
@@ -27,7 +29,7 @@ namespace pazzers
 
         delete skyfall;
         delete pacman;
-        delete field;
+        delete _field;
         delete number;
         delete life_img;
         delete status_img;
@@ -51,19 +53,9 @@ namespace pazzers
         for (auto& player : players)
             player->update(delta);
 
-        SDL_FillRect(window->surface, &window->surface->clip_rect, 0x000000);
-
-        for (auto player : players)
-            player->status();
-
-        window->apply(*field, 174, 0);
-        terrain->cicle(players.data());
-
-        std::sort(players.begin(), players.end(), [] (Pazzer* left, Pazzer* right) -> bool
-        {
-            return left->xy[1].y < right->xy[1].y;
-        });
-
+        /*for (auto player : players)
+            player->status();*/
+/*
         for (auto player : players)
         {
             if (player->dead == -1)
@@ -75,13 +67,17 @@ namespace pazzers
             {
                 player->make_fun(SDL_GetTicks());
             }
-        }
+        }*/
 
         return false;
     }
 
     void Game::draw_frame()
     {
+        window->clear();
+        field->draw();
 
+        for (auto player : players)
+            player->draw();
     }
 }

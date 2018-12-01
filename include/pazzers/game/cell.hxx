@@ -24,6 +24,7 @@ namespace pazzers
         class Cell
         {
             friend Field;
+            friend Pazzer;
 
         public:
             /**
@@ -48,7 +49,12 @@ namespace pazzers
             /**
              * \brief Draws the cell on the field.
              * */
-            virtual void draw() = 0;
+            virtual void draw();
+
+            /**
+             * \brief Draws the cell on the field.
+             * */
+            virtual void static_draw();
 
         protected:
             /**
@@ -62,6 +68,11 @@ namespace pazzers
              * \brief The field that owns this cell.
              * */
             Field* field;
+
+            /**
+             * \brief The origin position of the cell on the window.
+             * */
+            XY origin;
 
         private:
             /**
