@@ -11,6 +11,8 @@ ADD_EXECUTABLE(pazzers
     src/terrain.cxx
     src/flow/key-listener.cxx
     src/game/cell.cxx
+    src/game/grass-cell.cxx
+    src/game/wall-cell.cxx
     src/game/field.cxx
     src/game/key-controller.cxx
     src/game/virtual-controller.cxx

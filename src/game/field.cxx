@@ -1,4 +1,8 @@
 #include <pazzers/game/field.hxx>
+#include <pazzers/garbage.hxx>
+#include <pazzers/resources/cache.hxx>
+#include <pazzers/game/grass-cell.hxx>
+#include <pazzers/game/wall-cell.hxx>
 
 namespace pazzers
 {
@@ -9,7 +13,8 @@ namespace pazzers
             height(11),
             total_cells(width * height),
             all_cells(new Cell*[total_cells]),
-            cells(new Cell**[height])
+            cells(new Cell**[height]),
+            image(new resources::Image(40 * width, 40 * height))
         {
             for (int y = 0; y < height; ++y)
                 cells[y] = &all_cells[y * width];
@@ -25,8 +30,10 @@ namespace pazzers
                         x == width - 1 ||
                         (x % 2 == 0 && y % 2 == 0);
 
-                    const Cell::Type type = (is_wall) ? Cell::Type::WALL : Cell::Type::FREE;
-                    cells[y][x] = new Cell(type, {x, y});
+                    if (is_wall)
+                        cells[y][x] = new WallCell(this, {x, y});
+                    else
+                        cells[y][x] = new GrassCell(this, {x, y});
                 }
             }
 
@@ -41,6 +48,10 @@ namespace pazzers
                     cell->set_neighbour(geometry::Direction::LEFT,  get_cell({x - 1, y}));
                 }
             }
+
+            for (int i = 0; i < height; ++i)
+                for (int j = 0; j < width; ++j)
+                    this->get_cell({j, i})->draw();
         }
 
         Field::~Field()
@@ -50,6 +61,7 @@ namespace pazzers
 
             delete[] all_cells;
             delete[] cells;
+            delete this->image;
         }
 
         Cell* Field::get_cell(const XY& position)
@@ -61,6 +73,11 @@ namespace pazzers
                 return nullptr;
 
             return cells[position.y][position.x];
+        }
+
+        resources::Image& Field::get_image()
+        {
+            return *this->image;
         }
     }
 }

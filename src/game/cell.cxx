@@ -4,8 +4,8 @@ namespace pazzers
 {
     namespace game
     {
-        Cell::Cell(Type type, XY position):
-            type(type),
+        Cell::Cell(Field* field, XY position):
+            field(field),
             position(position)
         {
             for (auto& neighbour : neighbours)

@@ -1,6 +1,6 @@
 
-#ifndef PAZZERS_GAME_BLOCK_HXX
-#define PAZZERS_GAME_BLOCK_HXX
+#ifndef PAZZERS_GAME_CELL_HXX
+#define PAZZERS_GAME_CELL_HXX
 
 namespace pazzers
 {
@@ -27,23 +27,14 @@ namespace pazzers
 
         public:
             /**
-             * \brief Enumeration of cell types.
-             * */
-            enum class Type
-            {
-                FREE,
-                WALL
-            };
-
-            /**
-             * \brief The cell type.
-             * */
-            const Type type;
-
-            /**
              * \brief The position of the cell.
              * */
             const XY position;
+
+            /**
+             * \brief Default implementation.
+             * */
+            virtual ~Cell() = default;
 
             /**
              * \brief Get a cell's neighbour given the direction.
@@ -54,18 +45,23 @@ namespace pazzers
              * */
             Cell* get_neighbour(geometry::Direction direction);
 
+            /**
+             * \brief Draws the cell on the field.
+             * */
+            virtual void draw() = 0;
+
         protected:
             /**
              * \brief Create a new cell of specified type.
              * \param type The type of the cell.
              * \param position The position of the cell.
              * */
-            Cell(Type type, XY position);
+            Cell(Field* field, XY position);
 
             /**
-             * \brief Default implementation.
+             * \brief The field that owns this cell.
              * */
-            virtual ~Cell() = default;
+            Field* field;
 
         private:
             /**
