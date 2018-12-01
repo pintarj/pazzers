@@ -108,7 +108,12 @@ namespace pazzers
         /**
          * \brief The offset of the player inside the cell.
          * */
-        XY cell_offset;
+        float cell_offset_x, cell_offset_y;
+
+        /**
+         * \brief Represent the phase of the movement (between 0 nad 1).
+         * */
+        float movement_phase;
 
         /**
          * \brief The image that represent the pazzer.
@@ -130,8 +135,13 @@ namespace pazzers
          * */
         bool in_movement;
 
+        /**
+         * \brief The speed attribute.
+         * */
+        int speed;
+
         Uint8 count;
-        int power, speed, time, pac;
+        int power, time, pac;
         struct _message {
             XY xy;
             int time;

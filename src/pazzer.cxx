@@ -40,6 +40,18 @@ namespace pazzers
         }
     }
 
+    static int pazzer_view_sub_index_from_phase(const float phase)
+    {
+        if (phase < (4.0f / 22.0f))
+            return 0;
+        else if (phase < (11.0f / 22.0f))
+            return 1;
+        else if (phase < (15.0f / 22.0f))
+            return 0;
+        else
+            return 2;
+    }
+
     static void show_num(int x, int y, const char* str)
     {
         int start = 0;
@@ -109,10 +121,13 @@ namespace pazzers
         descriptor(descriptor),
         controller(controller),
         current_cell(nullptr),
-        cell_offset({20, 20}),
+        cell_offset_x(20.0f),
+        cell_offset_y(20.0f),
+        movement_phase(0.0f),
         image(resources::cache::get_image(descriptor.image_path)),
         direction(geometry::Direction::DOWN),
-        in_movement(false)
+        in_movement(false),
+        speed(100)
     {
         mun = 2;
         pac = 0;
@@ -128,7 +143,6 @@ namespace pazzers
         message.time = -1;
         dead = -1;
         dmg = 0;
-        speed = 120 / FPS;
     }
 
     Pazzer::~Pazzer() = default;
@@ -227,79 +241,57 @@ namespace pazzers
         auto new_direction = controller->get_direction();
 
         if (new_direction == geometry::Direction::NONE)
+        {
             in_movement = false;
+            movement_phase = 0.0f;
+        }
         else
         {
             direction = new_direction;
             in_movement = true;
-        }
-    }
 
-    void Pazzer::draw()
-    {
-        const int view_index = pazzer_view_index_from_direction(direction);
+            const float movement = delta * (float) speed;
+            movement_phase += movement / 60.0f;
 
-        const XY position = {
-            this->current_cell->origin.x + this->cell_offset.x - 20,
-            this->current_cell->origin.y + this->cell_offset.y - 30
-        };
+            while (movement_phase >= 1.0f)
+                movement_phase -= 1.0f;
 
-        window->apply(image, pazzer_views[view_index][alive(++count)], position.x, position.y);
-
-        count %= 22;
-    }
-
-    int Pazzer::alive(Uint8 i)
-    {
-        if (!in_movement)
-            return 0;
-
-        if (i < 4)
-            return 0;
-        else if (i < 12)
-            return 1;
-        else if (i < 16)
-            return 0;
-        else
-            return 2;
-    }
-
-    void Pazzer::move()
-    {
-        if (in_movement)
-        {
             switch (direction)
             {
                 case geometry::Direction::UP:
-                    xy[0].y += -speed;
+                    this->cell_offset_y -= movement;
                     break;
 
                 case geometry::Direction::DOWN:
-                    xy[0].y += speed;
+                    this->cell_offset_y += movement;
                     break;
 
                 case geometry::Direction::LEFT:
-                    xy[0].x += -speed;
+                    this->cell_offset_x -= movement;
                     break;
 
                 case geometry::Direction::RIGHT:
-                    xy[0].x += speed;
+                    this->cell_offset_x += movement;
                     break;
 
                 default:
                     break;
             }
         }
-
-        xy[1].x = xy[0].x + 2;
-        xy[1].y = xy[0].y + 12;
-        xy[2].x = xy[0].x + 38;
-        xy[2].y = xy[0].y + 49;
-        xy[3].x = (((xy[1].x + xy[2].x) / 2) - FX1) / 40;
-        xy[3].y = (((xy[1].y + xy[2].y) / 2) - FY1) / 40;
-        check();
     }
 
+    void Pazzer::draw()
+    {
+        const int view_index     = pazzer_view_index_from_direction(direction);
+        const int view_sub_index = pazzer_view_sub_index_from_phase(movement_phase);
+
+        const XY position = {
+            this->current_cell->origin.x + (int) this->cell_offset_x - 20,
+            this->current_cell->origin.y + (int) this->cell_offset_y - 30
+        };
+
+        window->apply(image, pazzer_views[view_index][view_sub_index], position.x, position.y);
+    }
 
     void Pazzer::check()
     {
