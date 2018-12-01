@@ -84,6 +84,12 @@ namespace pazzers
             void apply(const Image& image, int x, int y);
 
             /**
+             * \brief Clears the surface with the specified color.
+             * \brief The speficied color (the default is black).
+             * */
+            void clear(int color = 0x000000);
+
+            /**
              * \brief Create a clone of this image.
              * \return The clone.
              *

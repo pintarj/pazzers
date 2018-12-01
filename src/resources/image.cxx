@@ -85,6 +85,11 @@ namespace pazzers
             apply(image, *image.full_view_rectangle, x, y);
         }
 
+        void Image::clear(int color)
+        {
+            SDL_FillRect(this->surface, &this->surface->clip_rect, color);
+        }
+
         Image* Image::clone() const
         {
             SDL_LockSurface(surface);
